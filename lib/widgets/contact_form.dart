@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 import '../widgets/animated_button.dart';
 import '../widgets/toast_service.dart';
+import '../services/email_service.dart';
 
 /// Enhanced contact form with validation
 class ContactForm extends StatefulWidget {
@@ -157,23 +159,47 @@ class _ContactFormState extends State<ContactForm> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isSubmitting = true);
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-
-        ToastService.show(
-          context,
-          message: 'Message sent successfully! I\'ll get back to you soon.',
-          type: ToastType.success,
+      try {
+        final success = await EmailService.sendEmail(
+          senderName: _nameController.text,
+          senderEmail: _emailController.text,
+          subject: _subjectController.text,
+          message: _messageController.text,
+          // recipientEmail: 'karthiofficial0206@gmail.com', // Your email
         );
 
-        // Clear form
-        _nameController.clear();
-        _emailController.clear();
-        _subjectController.clear();
-        _messageController.clear();
+        if (mounted) {
+          setState(() => _isSubmitting = false);
+
+          if (success) {
+            ToastService.show(
+              context,
+              message: 'Message sent successfully! I\'ll get back to you soon.',
+              type: ToastType.success,
+            );
+
+            // Clear form
+            _nameController.clear();
+            _emailController.clear();
+            _subjectController.clear();
+            _messageController.clear();
+          } else {
+            ToastService.show(
+              context,
+              message: 'Failed to send message. Please try again.',
+              type: ToastType.error,
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() => _isSubmitting = false);
+          ToastService.show(
+            context,
+            message: 'Error: ${e.toString()}',
+            type: ToastType.error,
+          );
+        }
       }
     }
   }

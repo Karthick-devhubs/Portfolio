@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:html' as html show Blob, Url, AnchorElement;
 import '../../controllers/portfolio_controller.dart';
 import '../../models/enhanced_portfolio_data.dart';
 import '../../utils/app_colors.dart';
@@ -21,6 +24,7 @@ class _HeroSectionState extends State<HeroSection>
   late AnimationController _subtitleController;
   late AnimationController _buttonController;
   late AnimationController _bgGlowController;
+  late AnimationController _floatController;
 
   late Animation<double> _titleFade;
   late Animation<Offset> _titleSlide;
@@ -28,6 +32,7 @@ class _HeroSectionState extends State<HeroSection>
   late Animation<Offset> _subtitleSlide;
   late Animation<double> _buttonFade;
   late Animation<double> _bgGlow;
+  late Animation<double> _float;
 
   @override
   void initState() {
@@ -77,6 +82,14 @@ class _HeroSectionState extends State<HeroSection>
       CurvedAnimation(parent: _bgGlowController, curve: Curves.easeInOut),
     );
 
+    _floatController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2500),
+    )..repeat(reverse: true);
+    _float = Tween<double>(begin: -10, end: 10).animate(
+      CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
+    );
+
     // Stagger the animations
     _titleController.forward();
     Future.delayed(const Duration(milliseconds: 400), () {
@@ -93,6 +106,7 @@ class _HeroSectionState extends State<HeroSection>
     _subtitleController.dispose();
     _buttonController.dispose();
     _bgGlowController.dispose();
+    _floatController.dispose();
     super.dispose();
   }
 
@@ -126,9 +140,9 @@ class _HeroSectionState extends State<HeroSection>
                   children: [
                     // Greeting + Name
                     AnimatedBuilder(
-                      animation: _titleController,
+                      animation: Listenable.merge([_titleController, _floatController]),
                       builder: (context, _) => Transform.translate(
-                        offset: _titleSlide.value,
+                        offset: Offset(0, _titleSlide.value.dy + _float.value),
                         child: Opacity(
                           opacity: _titleFade.value,
                           child: Column(
@@ -216,7 +230,7 @@ class _HeroSectionState extends State<HeroSection>
                             AnimatedGradientButton(
                               text: 'Download Resume',
                               icon: Icons.download_rounded,
-                              onPressed: () {},
+                              onPressed:downloadResumeWeb,
                             ),
                           ],
                         ),
@@ -231,6 +245,20 @@ class _HeroSectionState extends State<HeroSection>
       ),
     );
   }
+
+  Future<void> downloadResumeWeb() async {
+  final data = await rootBundle.load('assets/resume/KarthickResume.pdf');
+  final bytes = data.buffer.asUint8List();
+
+  final blob = html.Blob([bytes]);
+  final url = html.Url.createObjectUrlFromBlob(blob);
+
+  final anchor = html.AnchorElement(href: url)
+    ..setAttribute("download", "Karthick_Resume.pdf")
+    ..click();
+
+  html.Url.revokeObjectUrl(url);
+}
 
   Widget _buildBackgroundGlow() {
     return AnimatedBuilder(

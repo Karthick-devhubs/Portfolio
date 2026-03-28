@@ -24,6 +24,7 @@ class AnimatedGradientButton extends StatefulWidget {
 class _AnimatedGradientButtonState extends State<AnimatedGradientButton>
     with SingleTickerProviderStateMixin {
   bool _isHovered = false;
+  bool _isPressed = false;
   late AnimationController _glowController;
   late Animation<double> _glowAnimation;
 
@@ -50,62 +51,67 @@ class _AnimatedGradientButtonState extends State<AnimatedGradientButton>
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedBuilder(
-        animation: _glowAnimation,
-        builder: (context, child) {
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            transform: Matrix4.diagonal3Values(
-              _isHovered ? 1.05 : 1.0,
-              _isHovered ? 1.05 : 1.0,
-              1.0,
-            ),
-            transformAlignment: Alignment.center,
-            child: Container(
-              width: widget.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: AppColors.primaryGradient,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(
-                      alpha: _glowAnimation.value,
-                    ),
-                    blurRadius: _isHovered ? 30 : 20,
-                    spreadRadius: _isHovered ? 2 : 0,
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        child: AnimatedBuilder(
+          animation: _glowAnimation,
+          builder: (context, child) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              transform: Matrix4.identity()
+                ..translate(0.0, 0.0, 0.0)
+                ..scale(_isPressed ? 0.95 : (_isHovered ? 1.05 : 1.0)),
+              transformAlignment: Alignment.center,
+              child: Container(
+                width: widget.width,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  onTap: widget.onPressed,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
+                  gradient: AppColors.primaryGradient,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(
+                        alpha: _glowAnimation.value,
+                      ),
+                      blurRadius: _isHovered ? 30 : 20,
+                      spreadRadius: _isHovered ? 2 : 0,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (widget.icon != null) ...[
-                          Icon(widget.icon, color: Colors.white, size: 20),
-                          const SizedBox(width: 10),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: widget.onPressed,
+                    splashColor: Colors.white.withValues(alpha: 0.3),
+                    highlightColor: Colors.white.withValues(alpha: 0.1),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (widget.icon != null) ...[
+                            Icon(widget.icon, color: Colors.white, size: 20),
+                            const SizedBox(width: 10),
+                          ],
+                          Text(
+                            widget.text,
+                            style: AppTextStyles.buttonText(context),
+                          ),
                         ],
-                        Text(
-                          widget.text,
-                          style: AppTextStyles.buttonText(context),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

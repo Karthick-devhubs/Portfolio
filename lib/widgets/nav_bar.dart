@@ -21,9 +21,7 @@ class NavBar extends StatelessWidget {
       height: 70,
       decoration: BoxDecoration(
         color: AppColors.background.withValues(alpha: 0.85),
-        border: Border(
-          bottom: BorderSide(color: AppColors.primary.withValues(alpha: 0.1)),
-        ),
+        border: Border(bottom: BorderSide(color: AppColors.primary.withValues(alpha: 0.1))),
       ),
       child: ClipRect(
         child: BackdropFilter(
@@ -58,14 +56,11 @@ class NavBar extends StatelessWidget {
     return Container(
       height: 50,
       width: 50,
-    
-      decoration:  BoxDecoration(
-         color: Colors.transparent,
+
+      decoration: BoxDecoration(
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(40),
-        image: DecorationImage(
-          image: AssetImage('assets/images/logo_light.png'),
-          fit: BoxFit.fill,
-        ),
+        image: DecorationImage(image: AssetImage('assets/images/logo_light.png'), fit: BoxFit.fill),
       ),
       // child: Image.asset('assets/images/logo.png',
       //     height: 30,
@@ -74,11 +69,7 @@ class NavBar extends StatelessWidget {
     );
   }
 
-  Widget _buildDesktopNav(
-    BuildContext context,
-    PortfolioController controller,
-    ThemeController themeController,
-  ) {
+  Widget _buildDesktopNav(BuildContext context, PortfolioController controller, ThemeController themeController) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -87,26 +78,7 @@ class NavBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Obx(() {
               final isActive = controller.currentSection.value == index;
-              return TextButton(
-                onPressed: () => controller.scrollToSection(index),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: Text(
-                  controller.navItems[index],
-                  style: AppTextStyles.navItem(context).copyWith(
-                    color: isActive
-                        ? AppColors.secondary
-                        : AppColors.textSecondary,
-                  ),
-                ),
-              );
+              return _NavItem(label: controller.navItems[index], isActive: isActive, onTap: () => controller.scrollToSection(index));
             }),
           );
         }),
@@ -115,46 +87,26 @@ class NavBar extends StatelessWidget {
         Obx(
           () => IconButton(
             onPressed: themeController.toggleTheme,
-            icon: Icon(
-              themeController.isDarkMode.value
-                  ? Icons.light_mode_rounded
-                  : Icons.dark_mode_rounded,
-              color: AppColors.secondary,
-              size: 22,
-            ),
+            icon: Icon(themeController.isDarkMode.value ? Icons.light_mode_rounded : Icons.dark_mode_rounded, color: AppColors.secondary, size: 22),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildMobileNav(
-    BuildContext context,
-    PortfolioController controller,
-    ThemeController themeController,
-  ) {
+  Widget _buildMobileNav(BuildContext context, PortfolioController controller, ThemeController themeController) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Obx(
           () => IconButton(
             onPressed: themeController.toggleTheme,
-            icon: Icon(
-              themeController.isDarkMode.value
-                  ? Icons.light_mode_rounded
-                  : Icons.dark_mode_rounded,
-              color: AppColors.secondary,
-              size: 22,
-            ),
+            icon: Icon(themeController.isDarkMode.value ? Icons.light_mode_rounded : Icons.dark_mode_rounded, color: AppColors.secondary, size: 22),
           ),
         ),
         IconButton(
           onPressed: () => _showMobileMenu(context, controller),
-          icon: const Icon(
-            Icons.menu_rounded,
-            color: AppColors.textPrimary,
-            size: 28,
-          ),
+          icon: const Icon(Icons.menu_rounded, color: AppColors.textPrimary, size: 28),
         ),
       ],
     );
@@ -164,9 +116,8 @@ class NavBar extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.cardDark,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      transitionAnimationController: AnimationController(vsync: Navigator.of(context), duration: const Duration(milliseconds: 400)),
       builder: (context) => Container(
         padding: const EdgeInsets.symmetric(vertical: 24),
         child: Column(
@@ -175,26 +126,71 @@ class NavBar extends StatelessWidget {
             Container(
               width: 40,
               height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.textMuted,
-                borderRadius: BorderRadius.circular(2),
-              ),
+              decoration: BoxDecoration(color: AppColors.textMuted, borderRadius: BorderRadius.circular(2)),
             ),
             const SizedBox(height: 20),
             ...List.generate(controller.navItems.length, (index) {
-              return ListTile(
-                title: Text(
-                  controller.navItems[index],
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.navItem(context).copyWith(fontSize: 18),
+              return TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: Duration(milliseconds: 300 + (index * 50)),
+                curve: Curves.easeOutCubic,
+                builder: (context, value, child) => Transform.translate(
+                  offset: Offset(0, 20 * (1 - value)),
+                  child: Opacity(
+                    opacity: value,
+                    child: ListTile(
+                      title: Text(controller.navItems[index], textAlign: TextAlign.center, style: AppTextStyles.navItem(context).copyWith(fontSize: 18)),
+                      onTap: () {
+                        Navigator.pop(context);
+                        controller.scrollToSection(index);
+                      },
+                    ),
+                  ),
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  controller.scrollToSection(index);
-                },
               );
             }),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatefulWidget {
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _NavItem({required this.label, required this.isActive, required this.onTap});
+
+  @override
+  State<_NavItem> createState() => _NavItemState();
+}
+
+class _NavItemState extends State<_NavItem> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: widget.isActive ? AppColors.primary.withValues(alpha: 0.15) : (_isHovered ? AppColors.primary.withValues(alpha: 0.08) : Colors.transparent),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: widget.isActive ? AppColors.secondary.withValues(alpha: 0.5) : Colors.transparent, width: 1.5),
+          ),
+          child: Text(
+            widget.label,
+            style: AppTextStyles.navItem(
+              context,
+            ).copyWith(color: widget.isActive ? AppColors.secondary : (_isHovered ? AppColors.textPrimary : AppColors.textSecondary)),
+          ),
         ),
       ),
     );

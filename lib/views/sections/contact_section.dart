@@ -86,8 +86,7 @@ class ContactSection extends StatelessWidget {
                     _ContactIcon(
                       icon: Icons.email_rounded,
                       label: 'Email',
-                      onTap: () =>
-                          _launchUrl('mailto:${EnhancedPortfolioData.email}'),
+                      onTap: openEmail,
                     ),
                     _ContactIcon(
                       icon: FontAwesomeIcons.linkedin,
@@ -138,6 +137,28 @@ class ContactSection extends StatelessWidget {
   }
 }
 
+Future<void> openEmail() async {
+  final Uri emailUri = Uri(
+    scheme: 'mailto',
+    path: 'karthiofficial0206@gmail.com',
+    query: encodeQueryParameters(<String, String>{
+      'subject': 'Let\'s Work Together',
+      'body': 'Hi Karthick, I would like to connect with you.',
+    }),
+  );
+
+  if (!await launchUrl(emailUri)) {
+    throw 'Could not launch $emailUri';
+  }
+}
+
+String? encodeQueryParameters(Map<String, String> params) {
+  return params.entries
+      .map((MapEntry<String, String> e) =>
+          '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+      .join('&');
+}
+
 class _ContactIcon extends StatefulWidget {
   final IconData icon;
   final String label;
@@ -153,68 +174,100 @@ class _ContactIcon extends StatefulWidget {
   State<_ContactIcon> createState() => _ContactIconState();
 }
 
-class _ContactIconState extends State<_ContactIcon> {
+class _ContactIconState extends State<_ContactIcon>
+    with SingleTickerProviderStateMixin {
   bool _isHovered = false;
+  late AnimationController _bounceController;
+  late Animation<double> _bounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _bounceController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _bounce = Tween<double>(begin: 0, end: -8).animate(
+      CurvedAnimation(parent: _bounceController, curve: Curves.elasticOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _bounceController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+      onEnter: (_) {
+        setState(() => _isHovered = true);
+        _bounceController.forward();
+      },
+      onExit: (_) {
+        setState(() => _isHovered = false);
+        _bounceController.reverse();
+      },
       child: GestureDetector(
         onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          transform: Matrix4.diagonal3Values(
-            _isHovered ? 1.15 : 1.0,
-            _isHovered ? 1.15 : 1.0,
-            1.0,
-          ),
-          transformAlignment: Alignment.center,
-          child: Column(
-            children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _isHovered
-                      ? AppColors.primary.withValues(alpha: 0.2)
-                      : AppColors.cardDark,
-                  border: Border.all(
-                    color: _isHovered
-                        ? AppColors.secondary
-                        : AppColors.primary.withValues(alpha: 0.3),
-                    width: 1.5,
+        child: AnimatedBuilder(
+          animation: _bounce,
+          builder: (context, child) => Transform.translate(
+            offset: Offset(0, _bounce.value),
+            child: Transform.scale(
+              scale: _isHovered ? 1.1 : 1.0,
+              child: Column(
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: _isHovered
+                          ? AppColors.primaryGradient
+                          : null,
+                      color: _isHovered
+                          ? null
+                          : AppColors.cardDark,
+                      border: Border.all(
+                        color: _isHovered
+                            ? AppColors.secondary
+                            : AppColors.primary.withValues(alpha: 0.3),
+                        width: 1.5,
+                      ),
+                      boxShadow: _isHovered
+                          ? [
+                              BoxShadow(
+                                color: AppColors.glowSecondary.withValues(
+                                  alpha: 0.5,
+                                ),
+                                blurRadius: 20,
+                                spreadRadius: 2,
+                              ),
+                            ]
+                          : [],
+                    ),
+                    child: Icon(
+                      widget.icon,
+                      color: _isHovered
+                          ? Colors.white
+                          : AppColors.textSecondary,
+                      size: 24,
+                    ),
                   ),
-                  boxShadow: _isHovered
-                      ? [
-                          BoxShadow(
-                            color: AppColors.glowSecondary.withValues(
-                              alpha: 0.4,
-                            ),
-                            blurRadius: 16,
-                            spreadRadius: 0,
-                          ),
-                        ]
-                      : [],
-                ),
-                child: Icon(
-                  widget.icon,
-                  color: _isHovered
-                      ? AppColors.secondary
-                      : AppColors.textSecondary,
-                  size: 24,
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.label,
+                    style: AppTextStyles.bodySmall(context).copyWith(
+                      color:
+                          _isHovered ? AppColors.secondary : AppColors.textMuted,
+                      fontWeight: _isHovered ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                widget.label,
-                style: AppTextStyles.bodySmall(context).copyWith(
-                  color: _isHovered ? AppColors.secondary : AppColors.textMuted,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

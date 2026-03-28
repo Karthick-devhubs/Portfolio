@@ -10,8 +10,33 @@ import '../../widgets/glassmorphism_container.dart';
 import '../../widgets/section_container.dart';
 
 /// About Me section with glassmorphic card.
-class AboutSection extends StatelessWidget {
+class AboutSection extends StatefulWidget {
   const AboutSection({super.key});
+
+  @override
+  State<AboutSection> createState() => _AboutSectionState();
+}
+
+class _AboutSectionState extends State<AboutSection>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _rotateController;
+  late Animation<double> _rotation;
+
+  @override
+  void initState() {
+    super.initState();
+    _rotateController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 20),
+    )..repeat();
+    _rotation = Tween<double>(begin: 0, end: 1).animate(_rotateController);
+  }
+
+  @override
+  void dispose() {
+    _rotateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,26 +78,32 @@ class AboutSection extends StatelessWidget {
   }
 
   Widget _buildAvatar(BuildContext context) {
-    return Container(
-      width: 180,
-      height: 180,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: AppColors.primaryGradient,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.4),
-            blurRadius: 30,
-            spreadRadius: 2,
+    return AnimatedBuilder(
+      animation: _rotation,
+      builder: (context, child) => Transform.rotate(
+        angle: _rotation.value * 0.1,
+        child: Container(
+          width: 180,
+          height: 180,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: AppColors.primaryGradient,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.4),
+                blurRadius: 30,
+                spreadRadius: 2,
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Center(
-        child: Text(
-          'K',
-          style: AppTextStyles.heroTitle(
-            context,
-          ).copyWith(fontSize: 72, color: Colors.white),
+          child: Center(
+            child: Text(
+              'K',
+              style: AppTextStyles.heroTitle(
+                context,
+              ).copyWith(fontSize: 72, color: Colors.white),
+            ),
+          ),
         ),
       ),
     );

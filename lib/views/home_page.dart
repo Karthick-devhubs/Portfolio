@@ -5,6 +5,7 @@ import '../utils/app_colors.dart';
 import '../utils/responsive.dart';
 import '../widgets/nav_bar.dart';
 import '../widgets/bottom_nav_bar.dart';
+import '../widgets/particle_background.dart';
 import 'sections/hero_section.dart';
 import 'sections/about_section.dart';
 import 'sections/skills_section.dart';
@@ -23,28 +24,33 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
+      body: Stack(
         children: [
-          if (!isMobile) const NavBar(),
-          Expanded(
-            child: Scrollbar(
-              controller: controller.scrollController,
-              child: SingleChildScrollView(
-                controller: controller.scrollController,
-                physics: const BouncingScrollPhysics(),
-                child: const Column(
-                  children: [
-                    HeroSection(),
-                    AboutSection(),
-                    SkillsSection(),
-                    ProjectsSection(),
-                    ExperienceSection(),
-                    ContactSection(),
-                    _Footer(),
-                  ],
+          const Positioned.fill(child: ParticleBackground()),
+          Column(
+            children: [
+              if (!isMobile) const NavBar(),
+              Expanded(
+                child: Scrollbar(
+                  controller: controller.scrollController,
+                  child: SingleChildScrollView(
+                    controller: controller.scrollController,
+                    physics: const BouncingScrollPhysics(),
+                    child: const Column(
+                      children: [
+                        HeroSection(),
+                        AboutSection(),
+                        SkillsSection(),
+                        ProjectsSection(),
+                        ExperienceSection(),
+                        ContactSection(),
+                        _Footer(),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),

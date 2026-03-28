@@ -30,7 +30,7 @@ class ProjectsSection extends StatelessWidget {
       title: 'Projects',
       child: Column(
         children: [
-          _buildFilters(context),
+          // _buildFilters(context),
           const SizedBox(height: 32),
           _buildCards(context, crossAxisCount, availableWidth),
         ],
