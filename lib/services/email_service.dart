@@ -28,10 +28,9 @@ class EmailService {
           'template_id': templateId,
           'user_id': publicKey,
           'template_params': {
-            'from_name': senderName,
-            'from_email': senderEmail,
-            'reply_to': senderEmail,
-            'subject': subject,
+            'name': senderName,
+            'email': senderEmail,
+            'title': subject,
             'message': message,
           },
         }),

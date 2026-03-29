@@ -77,37 +77,33 @@ class _AboutSectionState extends State<AboutSection>
     );
   }
 
-  Widget _buildAvatar(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _rotation,
-      builder: (context, child) => Transform.rotate(
-        angle: _rotation.value * 0.1,
-        child: Container(
-          width: 180,
-          height: 180,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            gradient: AppColors.primaryGradient,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.4),
-                blurRadius: 30,
-                spreadRadius: 2,
-              ),
-            ],
+ Widget _buildAvatar(BuildContext context) {
+  return AnimatedBuilder(
+    animation: _rotation,
+    builder: (context, child) => Container(
+      width: 180,
+      height: 180,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: AppColors.primaryGradient,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.4),
+            blurRadius: 30,
+            spreadRadius: 2,
           ),
-          child: Center(
-            child: Text(
-              'K',
-              style: AppTextStyles.heroTitle(
-                context,
-              ).copyWith(fontSize: 72, color: Colors.white),
-            ),
-          ),
+        ],
+      ),
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/my_image.png',
+          fit: BoxFit.cover,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildContent(BuildContext context) {
     return GlassmorphismContainer(

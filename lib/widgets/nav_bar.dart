@@ -8,8 +8,30 @@ import '../utils/app_text_styles.dart';
 import '../utils/responsive.dart';
 
 /// Top navigation bar — responsive with bottom sheet for mobile.
-class NavBar extends StatelessWidget {
+class NavBar extends StatefulWidget {
   const NavBar({super.key});
+
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> with TickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,22 +74,73 @@ class NavBar extends StatelessWidget {
     );
   }
 
-  Widget _buildLogo(BuildContext context) {
-    return Container(
-      height: 50,
-      width: 50,
-
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(40),
-        image: DecorationImage(image: AssetImage('assets/images/logo_light.png'), fit: BoxFit.fill),
+Widget _buildLogo(BuildContext context) {
+  return Container(
+    height: 50,
+    width: 50,
+    child: Stack(
+      children: [
+        // Logo image with padding to show border
+        RotationTransition(
+    turns: Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.linear,
       ),
-      // child: Image.asset('assets/images/logo.png',
-      //     height: 30,
-      //     fit: BoxFit.contain,
-      //    ),
-    );
-  }
+    ),
+    child: Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: SweepGradient(
+          colors: [
+            Colors.transparent,
+            Colors.blue,
+            Colors.purple,
+            Colors.pink,
+            Colors.transparent,
+          ],
+          stops: [0.0, 0.3, 0.6, 0.9, 1.0],
+        ),
+      ),
+      child: Center(
+        child: Container(
+            height: 46,
+            width: 46,
+          // margin: EdgeInsets.all(3),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black,
+          ),
+        ),
+      ),
+    ),
+  ),
+        
+        // Animated circular border
+       Positioned.fill(
+  child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: Container(
+              height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(22),
+              image: DecorationImage(
+                image: AssetImage('assets/images/logo.jpg'), 
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+),
+
+      ],
+    ),
+  );
+}
+
+
 
   Widget _buildDesktopNav(BuildContext context, PortfolioController controller, ThemeController themeController) {
     return Row(
@@ -82,14 +155,14 @@ class NavBar extends StatelessWidget {
             }),
           );
         }),
-        const SizedBox(width: 8),
-        // Theme toggle
-        Obx(
-          () => IconButton(
-            onPressed: themeController.toggleTheme,
-            icon: Icon(themeController.isDarkMode.value ? Icons.light_mode_rounded : Icons.dark_mode_rounded, color: AppColors.secondary, size: 22),
-          ),
-        ),
+        // const SizedBox(width: 8),
+        // // Theme toggle
+        // Obx(
+        //   () => IconButton(
+        //     onPressed: themeController.toggleTheme,
+        //     icon: Icon(themeController.isDarkMode.value ? Icons.light_mode_rounded : Icons.dark_mode_rounded, color: AppColors.secondary, size: 22),
+        //   ),
+        // ),
       ],
     );
   }

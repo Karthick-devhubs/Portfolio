@@ -83,7 +83,7 @@ class AppTextStyles {
 
   static TextStyle navItem(BuildContext context) {
     return GoogleFonts.exo2(
-      fontSize: 14,
+      fontSize: 16,
       fontWeight: FontWeight.w600,
       color: AppColors.textSecondary,
       letterSpacing: 0.8,

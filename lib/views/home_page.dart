@@ -83,7 +83,7 @@ class _Footer extends StatelessWidget {
             shaderCallback: (bounds) =>
                 AppColors.primaryGradient.createShader(bounds),
             child: const Text(
-              '<K/>',
+              '<Portfolio>',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -91,9 +91,9 @@ class _Footer extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Text(
-            '© 2024 Karthick. Built with Flutter & ❤️',
+            '© 2026 Karthick. Built with Flutter & ❤️',
             style: TextStyle(fontSize: 13, color: AppColors.textMuted),
           ),
         ],

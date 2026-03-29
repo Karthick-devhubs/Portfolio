@@ -194,24 +194,24 @@ class _ProjectCardState extends State<ProjectCard>
                     ),
                   ),
                 // View/Like indicators
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: Row(
-                    children: [
-                      _buildMetric(
-                          Icons.visibility_rounded, widget.project.views),
-                      const SizedBox(width: 12),
-                      _buildMetric(
-                          Icons.favorite_rounded, widget.project.likes),
-                    ],
-                  ),
-                ),
+                // Positioned(
+                //   top: 16,
+                //   right: 16,
+                //   child: Row(
+                //     children: [
+                //       _buildMetric(
+                //           Icons.visibility_rounded, widget.project.views),
+                //       const SizedBox(width: 12),
+                //       _buildMetric(
+                //           Icons.favorite_rounded, widget.project.likes),
+                //     ],
+                //   ),
+                // ),
                 // Status badge
-                if (widget.project.status != ProjectStatus.completed)
+                // if (widget.project.status != ProjectStatus.completed)
                   Positioned(
                     top: 16,
-                    left: 16,
+                    right: 16,
                     child: Container(
                       padding:
                           const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
