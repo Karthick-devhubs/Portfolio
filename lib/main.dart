@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'controllers/portfolio_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'views/home_page.dart';
+import 'views/splash_screen.dart';
 
 void main() {
   runApp(const PortfolioApp());
@@ -24,7 +25,7 @@ class PortfolioApp extends StatelessWidget {
         theme: themeController.isDarkMode.value
             ? themeController.darkTheme
             : themeController.lightTheme,
-        home: const HomePage(),
+        home: const SplashScreen(child: HomePage()),
       ),
     );
   }
