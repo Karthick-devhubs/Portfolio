@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/enhanced_models.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
@@ -53,6 +54,8 @@ class _ProjectCardState extends State<ProjectCard>
       },
       child: GestureDetector(
         onTap: () {
+          // Add haptic feedback for mobile
+          HapticFeedback.lightImpact();
           Navigator.push(
             context,
             PageRouteBuilder(

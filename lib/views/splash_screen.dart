@@ -10,51 +10,110 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+    with TickerProviderStateMixin {
+  late AnimationController _loaderController;
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
   bool _showContent = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    _loaderController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     )..repeat();
 
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeOut),
+    );
+
+    Future.delayed(const Duration(milliseconds: 3000), () {
       if (mounted) {
-        setState(() => _showContent = true);
+        _fadeController.forward().then((_) {
+          if (mounted) setState(() => _showContent = true);
+        });
       }
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _loaderController.dispose();
+    _fadeController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 600),
-      child: _showContent
-          ? widget.child
-          : Scaffold(
-              backgroundColor: const Color(0xFF0a0a0a),
-              body: Center(
-                child: AnimatedBuilder(
-                  animation: _controller,
-                  builder: (context, child) {
-                    return CustomPaint(
-                      painter: SegmentedCircularLoader(_controller.value),
-                      size: const Size(100, 100),
-                    );
-                  },
-                ),
+    if (_showContent) return widget.child;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF0a0a0a),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedBuilder(
+                animation: _loaderController,
+                builder: (context, child) {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CustomPaint(
+                        painter: SegmentedCircularLoader(_loaderController.value),
+                        size: const Size(100, 100),
+                      ),
+                      ClipOval(
+                        child: Image.asset(
+                          'assets/images/logo.jpg',
+                          width: 70,
+                          height: 70,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
-            ),
+              const SizedBox(height: 24),
+              _buildAnimatedText(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnimatedText() {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeOut,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, 20 * (1 - value)),
+            child: child,
+          ),
+        );
+      },
+      child: const Text(
+        'Karthick Portfolio',
+        style: TextStyle(
+          color: Colors.white70,
+          fontSize: 18,
+          fontWeight: FontWeight.w300,
+          letterSpacing: 2,
+        ),
+      ),
     );
   }
 }

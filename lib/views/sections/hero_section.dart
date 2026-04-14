@@ -218,22 +218,39 @@ class _HeroSectionState extends State<HeroSection>
                       animation: _buttonController,
                       builder: (context, _) => Opacity(
                         opacity: _buttonFade.value,
-                        child: Wrap(
-                          spacing: 16,
-                          runSpacing: 16,
-                          children: [
-                            AnimatedGradientButton(
-                              text: 'View Projects',
-                              icon: Icons.rocket_launch_rounded,
-                              onPressed: () => controller.scrollToSection(3),
-                            ),
-                            AnimatedGradientButton(
-                              text: 'Download Resume',
-                              icon: Icons.download_rounded,
-                              onPressed:downloadResumeWeb,
-                            ),
-                          ],
-                        ),
+                        child: isMobile
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  AnimatedGradientButton(
+                                    text: 'View Projects',
+                                    icon: Icons.rocket_launch_rounded,
+                                    onPressed: () => controller.scrollToSection(3),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  AnimatedGradientButton(
+                                    text: 'Download Resume',
+                                    icon: Icons.download_rounded,
+                                    onPressed: downloadResumeWeb,
+                                  ),
+                                ],
+                              )
+                            : Wrap(
+                                spacing: 16,
+                                runSpacing: 16,
+                                children: [
+                                  AnimatedGradientButton(
+                                    text: 'View Projects',
+                                    icon: Icons.rocket_launch_rounded,
+                                    onPressed: () => controller.scrollToSection(3),
+                                  ),
+                                  AnimatedGradientButton(
+                                    text: 'Download Resume',
+                                    icon: Icons.download_rounded,
+                                    onPressed: downloadResumeWeb,
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                   ],

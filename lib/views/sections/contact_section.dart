@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -210,13 +211,18 @@ class _ContactIconState extends State<_ContactIcon>
         _bounceController.reverse();
       },
       child: GestureDetector(
-        onTap: widget.onTap,
+        onTap: () {
+          HapticFeedback.mediumImpact();
+          widget.onTap();
+        },
         child: AnimatedBuilder(
           animation: _bounce,
           builder: (context, child) => Transform.translate(
             offset: Offset(0, _bounce.value),
-            child: Transform.scale(
-              scale: _isHovered ? 1.1 : 1.0,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutCubic,
+              transform: Matrix4.identity()..scale(_isHovered ? 1.1 : 1.0),
               child: Column(
                 children: [
                   Container(

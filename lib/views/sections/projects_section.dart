@@ -77,13 +77,24 @@ class ProjectsSection extends StatelessWidget {
     double availableWidth,
   ) {
     if (crossAxisCount == 1) {
-      // Stack cards vertically on mobile
+      // Enhanced mobile card layout with stagger animation
       return Column(
         children: List.generate(EnhancedPortfolioData.projects.length, (index) {
-          return AnimatedOnScroll(
-            delay: Duration(milliseconds: index * 150),
+          return TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.0, end: 1.0),
+            duration: Duration(milliseconds: 400 + (index * 100)),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, child) {
+              return Transform.translate(
+                offset: Offset(30 * (1 - value), 0),
+                child: Opacity(
+                  opacity: value,
+                  child: child,
+                ),
+              );
+            },
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 24),
+              padding: const EdgeInsets.only(bottom: 20),
               child: ProjectCard(
                 project: EnhancedPortfolioData.projects[index],
                 index: index,

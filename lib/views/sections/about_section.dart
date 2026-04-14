@@ -70,7 +70,18 @@ class _AboutSectionState extends State<AboutSection>
   Widget _buildMobileLayout(BuildContext context) {
     return Column(
       children: [
-        _buildAvatar(context),
+        TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeOut,
+          builder: (context, value, child) {
+            return Transform.scale(
+              scale: 0.8 + (0.2 * value),
+              child: Opacity(opacity: value, child: child),
+            );
+          },
+          child: _buildAvatar(context),
+        ),
         const SizedBox(height: 32),
         _buildContent(context),
       ],
