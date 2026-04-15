@@ -54,7 +54,6 @@ class _ProjectCardState extends State<ProjectCard>
       },
       child: GestureDetector(
         onTap: () {
-          // Add haptic feedback for mobile
           HapticFeedback.lightImpact();
           Navigator.push(
             context,
@@ -97,92 +96,143 @@ class _ProjectCardState extends State<ProjectCard>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Project number badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: AppColors.primaryGradient,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          '0${widget.index + 1}',
-                          style: AppTextStyles.chipText(
-                            context,
-                          ).copyWith(
-                              color: Colors.white, fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Title
-                      Text(
-                        widget.project.title,
-                        style: AppTextStyles.projectTitle(context),
-                      ),
-                      const SizedBox(height: 8),
-
-                      // Description
-                      Text(
-                        widget.project.description,
-                        style: AppTextStyles.body(context),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Features
-                      ...widget.project.features.map(
-                        (f) => Padding(
-                          padding: const EdgeInsets.only(bottom: 6),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(top: 6),
-                                child: Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  size: 10,
-                                  color: AppColors.secondary,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(f,
-                                    style: AppTextStyles.bodySmall(context)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Tech stack
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: widget.project.techStack.map((tech) {
-                          return Container(
+                      Row(
+                        children: [
+                          Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.1),
+                              gradient: AppColors.primaryGradient,
                               borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '0${widget.index + 1}',
+                              style: AppTextStyles.chipText(context).copyWith(
+                                  color: Colors.white, fontWeight: FontWeight.w800),
+                            ),
+                          ),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: _getStatusColor().withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              widget.project.status.name.toUpperCase(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        widget.project.title,
+                        style: AppTextStyles.projectTitle(context),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.project.category,
+                        style: AppTextStyles.bodySmall(context).copyWith(
+                          color: AppColors.secondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        widget.project.description,
+                        style: AppTextStyles.body(context),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Icon(Icons.check_circle_outline, size: 14, color: AppColors.secondary),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              '${widget.project.features.length} Key Features',
+                              style: AppTextStyles.bodySmall(context).copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.visibility_rounded, size: 14, color: AppColors.textMuted),
+                              const SizedBox(width: 4),
+                              Text(
+                                widget.project.views > 999
+                                    ? '${(widget.project.views / 1000).toStringAsFixed(1)}k'
+                                    : widget.project.views.toString(),
+                                style: AppTextStyles.bodySmall(context).copyWith(
+                                  color: AppColors.textMuted,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: widget.project.techStack.take(5).map((tech) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(6),
                               border: Border.all(
                                 color: AppColors.primary.withValues(alpha: 0.3),
                               ),
                             ),
                             child: Text(
                               tech,
-                              style: AppTextStyles.chipText(
-                                context,
-                              ).copyWith(
+                              style: AppTextStyles.chipText(context).copyWith(
                                   fontSize: 11, color: AppColors.primary),
                             ),
                           );
                         }).toList(),
+                      ),
+                      if (widget.project.techStack.length > 5)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            '+${widget.project.techStack.length - 5} more',
+                            style: AppTextStyles.bodySmall(context).copyWith(
+                              color: AppColors.textMuted,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Icon(Icons.touch_app_rounded, size: 16, color: AppColors.secondary),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Tap to view details',
+                            style: AppTextStyles.bodySmall(context).copyWith(
+                              color: AppColors.secondary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(Icons.arrow_forward_rounded, size: 16, color: AppColors.secondary),
+                        ],
                       ),
                     ],
                   ),
@@ -193,42 +243,6 @@ class _ProjectCardState extends State<ProjectCard>
                       borderRadius: BorderRadius.circular(16),
                       child: CustomPaint(
                         painter: ShimmerPainter(_shimmer.value),
-                      ),
-                    ),
-                  ),
-                // View/Like indicators
-                // Positioned(
-                //   top: 16,
-                //   right: 16,
-                //   child: Row(
-                //     children: [
-                //       _buildMetric(
-                //           Icons.visibility_rounded, widget.project.views),
-                //       const SizedBox(width: 12),
-                //       _buildMetric(
-                //           Icons.favorite_rounded, widget.project.likes),
-                //     ],
-                //   ),
-                // ),
-                // Status badge
-                // if (widget.project.status != ProjectStatus.completed)
-                  Positioned(
-                    top: 16,
-                    right: 16,
-                    child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: _getStatusColor().withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        widget.project.status.name.toUpperCase(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                        ),
                       ),
                     ),
                   ),

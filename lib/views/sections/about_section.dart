@@ -140,8 +140,8 @@ class _AboutSectionState extends State<AboutSection>
             runSpacing: 16,
             children: [
               _buildStat(context, '1+', 'Years Exp'),
-              _buildStat(context, '5+', 'Projects'),
-              _buildStat(context, '6+', 'Tech Stacks'),
+              _buildStat(context, '6+', 'Projects'),
+              _buildStat(context, '10+', 'Tech Stacks'),
             ],
           ),
         ],

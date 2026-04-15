@@ -30,8 +30,8 @@ class _ParticleBackgroundState extends State<ParticleBackground>
       _particles.add(Particle(
         x: random.nextDouble(),
         y: random.nextDouble(),
-        vx: (random.nextDouble() - 0.5) * 0.0005,
-        vy: (random.nextDouble() - 0.5) * 0.0005,
+        vx: (random.nextDouble() - 0.5) * 0.002,
+        vy: (random.nextDouble() - 0.5) * 0.002,
         size: random.nextDouble() * 3 + 1,
       ));
     }

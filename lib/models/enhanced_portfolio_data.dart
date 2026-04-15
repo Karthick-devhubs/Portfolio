@@ -16,7 +16,7 @@ class EnhancedPortfolioData {
       title: 'Dotzza - AI Healthcare Collaboration Platform',
       description:
           'An AI-powered collaborative project management platform designed for healthcare students, educators, and manage projects, and enhance team productivity.',
-      imageUrl: 'https://images.unsplash.com/photo-1581090700227-1e8b1c7bca4d?w=400&h=300&fit=crop',
+      imageUrl: 'https://www.google.com/search?sca_esv=8503c9f894ce6c69&udm=2&fbs=ADc_l-aN0CWEZBOHjofHoaMMDiKpaEWjvZ2Py1XXV8d8KvlI3jljrY5CkLlk8Dq3IvwBz-Qg9gdZYJriKd9fBMKKfwqZlI558rPhYXCT0gQlVOCz7r3O6mKrYxvUenXFd2EC0wwnLCjCBZ14WQe_VshFqF7175h-ylteY_rsQ4jIXe_tYHrnRYlzpT2aAkY5i6iMjKnxs559BPtyCKmWIWAuuPanrgoSrA&q=dotzza&sa=X&ved=2ahUKEwi3kZz84u6TAxUBR2wGHRGbBFAQtKgLegQIHhAB&biw=1536&bih=730&dpr=1.25#sv=CAMSURoyKhBlLUVRSU5ialU1dzRucjNNMg5FUUlOYmpVNXc0bnIzTToOUmZwU2RESUJaRVJBeU0gBCoXCgFzEhBlLUVRSU5ialU1dzRucjNNGAEwARgHINKPq5wNSggQARgBIAEoAQ',
       features: [
         'AI-powered project collaboration tailored for healthcare workflows',
         'Teamspace creation for managing projects with structured roles',
@@ -125,8 +125,12 @@ class EnhancedPortfolioData {
     'Admin panel for match control, event updates, and player actions',
     'Live match dashboard for users with instant score visibility',
     'Event-based scoring system reflecting real match scenarios',
-    'Team and player performance tracking',
-    'Optimized UI for tablet-based match management',
+  'Supports real-time tracking of match events such as Scrum, Lineout, Penalty, Knock-on, Restart, and Drop Goal attempts.',
+'Provides a structured workflow that guides referees through correct game decisions based on match situations.',
+'Includes an interactive rugby field interface where events are positioned accurately based on field location.',
+'Ensures rule enforcement by validating actions according to rugby gameplay constraints (e.g., field boundaries, distances).',
+'Enables smooth navigation between different match scenarios based on event outcomes.',
+'Designed specifically for tablet usage, making it practical and easy to use during live matches.',
     'Structured match flow based on official rugby rules',
     'Scalable architecture for managing multiple matches',
     'Clean and intuitive UI for both admin and user applications',
@@ -156,6 +160,91 @@ class EnhancedPortfolioData {
   screenshots: [
     'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop',
     'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=800&h=600&fit=crop',
+  ],
+),
+ProjectModel(
+  id: 'proj_005',
+  title: 'Clops Brand - Business & Brand Management App',
+  description:
+      'A mobile application designed to support business and brand management by providing secure access, streamlined workflows, and an improved user experience through modern interface enhancements.',
+  imageUrl: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=400&h=300&fit=crop',
+  features: [
+    'Business-focused platform for managing brand-related activities and user interactions',
+    'Streamlined user onboarding and login experience for quick access to the platform',
+    'Secure account access using Google Sign-In for simplified authentication',
+    'Biometric authentication (fingerprint) for enhanced security and faster access',
+    'Improved UI/UX to provide a clean and intuitive experience for business users',
+    'Optimized navigation flow to ensure smooth access to key features and workflows',
+    'Responsive and consistent design across multiple devices',
+    'User-centric interface designed to improve productivity and ease of use',
+  ],
+  techStack: [
+    'Flutter',
+    'Firebase Authentication',
+    'Google Sign-In',
+    'Biometric Authentication',
+    'REST API'
+  ],
+  githubUrl: '',
+  liveUrl: 'https://play.google.com/store/apps/details?id=com.hypex.brand',
+  createdAt: DateTime(2024, 6, 10),
+  status: ProjectStatus.completed,
+  likes: 198,
+  views: 1560,
+  category: 'Business / Productivity',
+  tags: [
+    'Business App',
+    'Productivity',
+    'Authentication',
+    'Security',
+    'Flutter',
+    'Mobile App'
+  ],
+  screenshots: [
+    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop',
+  ],
+),
+ProjectModel(
+  id: 'proj_006',
+  title: 'Wittehms - Dental Care Management App',
+  description:
+      'A dental care management application designed to streamline interactions between patients, dentists, and clinic staff by enabling efficient appointment scheduling and workflow management.',
+  imageUrl: 'https://images.unsplash.com/photo-1588776814546-ec7e6c2b4bcb?w=400&h=300&fit=crop',
+  features: [
+    'Role-based system supporting patients, dentists, and clinic staff with tailored access',
+    'Appointment booking and scheduling system for managing dental consultations',
+    'Structured workflows to improve coordination between patients and dental professionals',
+    'Centralized platform for handling patient interactions and clinic operations',
+    'User-friendly interface designed for easy navigation and quick task completion',
+    'Improved communication flow between patients and clinic staff',
+    'Responsive design ensuring smooth experience across Android and iOS devices',
+    'Optimized user experience to simplify appointment management and reduce manual effort',
+  ],
+  techStack: [
+    'Flutter',
+    'REST API',
+    'Firebase',
+    'GetX'
+  ],
+  githubUrl: '',
+  liveUrl: '',
+  createdAt: DateTime(2024, 5, 15),
+  status: ProjectStatus.inProgress,
+  likes: 164,
+  views: 1290,
+  category: 'Healthcare / Dental',
+  tags: [
+    'Healthcare',
+    'Dental',
+    'Appointment Booking',
+    'Role-Based System',
+    'Mobile App',
+    'Productivity'
+  ],
+  screenshots: [
+    'https://images.unsplash.com/photo-1588776814546-ec7e6c2b4bcb?w=800&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=600&fit=crop',
   ],
 ),
   ];
