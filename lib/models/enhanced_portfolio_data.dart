@@ -16,7 +16,7 @@ class EnhancedPortfolioData {
       title: 'Dotzza - AI Healthcare Collaboration Platform',
       description:
           'An AI-powered collaborative project management platform designed for healthcare students, educators, and manage projects, and enhance team productivity.',
-      imageUrl: 'https://www.google.com/search?sca_esv=8503c9f894ce6c69&udm=2&fbs=ADc_l-aN0CWEZBOHjofHoaMMDiKpaEWjvZ2Py1XXV8d8KvlI3jljrY5CkLlk8Dq3IvwBz-Qg9gdZYJriKd9fBMKKfwqZlI558rPhYXCT0gQlVOCz7r3O6mKrYxvUenXFd2EC0wwnLCjCBZ14WQe_VshFqF7175h-ylteY_rsQ4jIXe_tYHrnRYlzpT2aAkY5i6iMjKnxs559BPtyCKmWIWAuuPanrgoSrA&q=dotzza&sa=X&ved=2ahUKEwi3kZz84u6TAxUBR2wGHRGbBFAQtKgLegQIHhAB&biw=1536&bih=730&dpr=1.25#sv=CAMSURoyKhBlLUVRSU5ialU1dzRucjNNMg5FUUlOYmpVNXc0bnIzTToOUmZwU2RESUJaRVJBeU0gBCoXCgFzEhBlLUVRSU5ialU1dzRucjNNGAEwARgHINKPq5wNSggQARgBIAEoAQ',
+      imageUrl: 'assets/images/dotzza_logo.png',
       features: [
         'AI-powered project collaboration tailored for healthcare workflows',
         'Teamspace creation for managing projects with structured roles',
@@ -44,7 +44,7 @@ class EnhancedPortfolioData {
       title: 'Finiclub - AI Financial Learning Platform',
       description:
           'An AI-powered financial literacy platform that helps users learn investing, budgeting, and personal finance through interactive courses, insights, and community-driven learning.',
-      imageUrl: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop',
+      imageUrl: 'assets/images/finiclub_logo.jpg',
       features: [
         'Interactive financial literacy courses for beginners and advanced users',
         'AI-powered insights for smarter financial decision making',
@@ -72,7 +72,7 @@ class EnhancedPortfolioData {
   id: 'proj_003',
   title: 'Lotto23 - Lottery Ticket Management Platform',
   description: 'A scalable lottery ticket selling and management application that enables admins, agents, and users to participate in a structured ticket distribution system with dynamic prize pools and commission-based earnings.',
-  imageUrl: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=300&fit=crop',
+  imageUrl: 'assets/images/lotto_logo.png',
   features: [
     'Role-based system with Admin, Agent, and User access control',
     'Admin panel for creating and managing lottery tickets',
@@ -117,7 +117,7 @@ class EnhancedPortfolioData {
   id: 'proj_004',
   title: 'RugbyManagement - Live Match & Management System',
   description: 'A real-time rugby match management and live score tracking system consisting of a tablet-based admin panel and a user-facing mobile app, enabling seamless match updates, rule enforcement, and live game insights.',
-  imageUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop',
+  imageUrl: 'assets/images/sports_logo.png',
   features: [
     'Dual-application system: Admin (tablet) + User (mobile) apps',
     'Real-time score updates synchronized across devices',
@@ -167,7 +167,7 @@ ProjectModel(
   title: 'Clops Brand - Business & Brand Management App',
   description:
       'A mobile application designed to support business and brand management by providing secure access, streamlined workflows, and an improved user experience through modern interface enhancements.',
-  imageUrl: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=400&h=300&fit=crop',
+  imageUrl: 'assets/images/clops_logo.png',
   features: [
     'Business-focused platform for managing brand-related activities and user interactions',
     'Streamlined user onboarding and login experience for quick access to the platform',
@@ -210,7 +210,7 @@ ProjectModel(
   title: 'Wittehms - Dental Care Management App',
   description:
       'A dental care management application designed to streamline interactions between patients, dentists, and clinic staff by enabling efficient appointment scheduling and workflow management.',
-  imageUrl: 'https://images.unsplash.com/photo-1588776814546-ec7e6c2b4bcb?w=400&h=300&fit=crop',
+  imageUrl: 'assets/images/wittehms_logo.png',
   features: [
     'Role-based system supporting patients, dentists, and clinic staff with tailored access',
     'Appointment booking and scheduling system for managing dental consultations',

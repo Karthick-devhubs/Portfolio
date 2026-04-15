@@ -73,12 +73,7 @@ class ProjectDetailPage extends StatelessWidget {
             ? Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    project.imageUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        _buildPlaceholderImage(),
-                  ),
+                  _buildImage(),
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -95,6 +90,15 @@ class ProjectDetailPage extends StatelessWidget {
               )
             : _buildPlaceholderImage(),
       ),
+    );
+  }
+
+  Widget _buildImage() {
+    final imageUrl = project.imageUrl!;
+    return Image.asset(
+      imageUrl,
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
     );
   }
 

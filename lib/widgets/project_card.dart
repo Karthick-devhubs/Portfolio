@@ -166,58 +166,58 @@ class _ProjectCardState extends State<ProjectCard>
                               ),
                             ),
                           ),
-                          Row(
-                            children: [
-                              Icon(Icons.visibility_rounded, size: 14, color: AppColors.textMuted),
-                              const SizedBox(width: 4),
-                              Text(
-                                widget.project.views > 999
-                                    ? '${(widget.project.views / 1000).toStringAsFixed(1)}k'
-                                    : widget.project.views.toString(),
-                                style: AppTextStyles.bodySmall(context).copyWith(
-                                  color: AppColors.textMuted,
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   children: [
+                          //     Icon(Icons.visibility_rounded, size: 14, color: AppColors.textMuted),
+                          //     const SizedBox(width: 4),
+                          //     Text(
+                          //       widget.project.views > 999
+                          //           ? '${(widget.project.views / 1000).toStringAsFixed(1)}k'
+                          //           : widget.project.views.toString(),
+                          //       style: AppTextStyles.bodySmall(context).copyWith(
+                          //         color: AppColors.textMuted,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
-                      const SizedBox(height: 16),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: widget.project.techStack.take(5).map((tech) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                color: AppColors.primary.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            child: Text(
-                              tech,
-                              style: AppTextStyles.chipText(context).copyWith(
-                                  fontSize: 11, color: AppColors.primary),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                      if (widget.project.techStack.length > 5)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            '+${widget.project.techStack.length - 5} more',
-                            style: AppTextStyles.bodySmall(context).copyWith(
-                              color: AppColors.textMuted,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ),
+                      // const SizedBox(height: 16),
+                      // Wrap(
+                      //   spacing: 8,
+                      //   runSpacing: 8,
+                      //   children: widget.project.techStack.take(5).map((tech) {
+                      //     return Container(
+                      //       padding: const EdgeInsets.symmetric(
+                      //         horizontal: 10,
+                      //         vertical: 5,
+                      //       ),
+                      //       decoration: BoxDecoration(
+                      //         color: AppColors.primary.withValues(alpha: 0.1),
+                      //         borderRadius: BorderRadius.circular(6),
+                      //         border: Border.all(
+                      //           color: AppColors.primary.withValues(alpha: 0.3),
+                      //         ),
+                      //       ),
+                      //       child: Text(
+                      //         tech,
+                      //         style: AppTextStyles.chipText(context).copyWith(
+                      //             fontSize: 11, color: AppColors.primary),
+                      //       ),
+                      //     );
+                      //   }).toList(),
+                      // ),
+                      // if (widget.project.techStack.length > 5)
+                      //   Padding(
+                      //     padding: const EdgeInsets.only(top: 8),
+                      //     child: Text(
+                      //       '+${widget.project.techStack.length - 5} more',
+                      //       style: AppTextStyles.bodySmall(context).copyWith(
+                      //         color: AppColors.textMuted,
+                      //         fontStyle: FontStyle.italic,
+                      //       ),
+                      //     ),
+                      //   ),
                       const SizedBox(height: 16),
                       Row(
                         children: [
