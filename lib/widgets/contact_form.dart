@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
-import '../utils/app_text_styles.dart';
 import '../widgets/animated_button.dart';
 import '../widgets/toast_service.dart';
 import '../services/email_service.dart';
 
-/// Enhanced contact form styled after Astra AI's interactive forms.
+/// Contact form with sleek inputs, validation cues, and smooth sending states.
 class ContactForm extends StatefulWidget {
   const ContactForm({super.key});
 
@@ -42,7 +41,7 @@ class _ContactFormState extends State<ContactForm> {
             label: 'Your Name',
             icon: Icons.person_rounded,
             validator: (value) {
-              if (value == null || value.isEmpty) {
+              if (value == null || value.trim().isEmpty) {
                 return 'Please enter your name';
               }
               return null;
@@ -55,12 +54,12 @@ class _ContactFormState extends State<ContactForm> {
             icon: Icons.email_rounded,
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
-              if (value == null || value.isEmpty) {
+              if (value == null || value.trim().isEmpty) {
                 return 'Please enter your email';
               }
               if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                  .hasMatch(value)) {
-                return 'Please enter a valid email';
+                  .hasMatch(value.trim())) {
+                return 'Please enter a valid email address';
               }
               return null;
             },
@@ -71,7 +70,7 @@ class _ContactFormState extends State<ContactForm> {
             label: 'Subject',
             icon: Icons.subject_rounded,
             validator: (value) {
-              if (value == null || value.isEmpty) {
+              if (value == null || value.trim().isEmpty) {
                 return 'Please enter a subject';
               }
               return null;
@@ -80,14 +79,14 @@ class _ContactFormState extends State<ContactForm> {
           const SizedBox(height: 16),
           _buildTextField(
             controller: _messageController,
-            label: 'Message',
-            icon: Icons.message_rounded,
+            label: 'Your Message',
+            icon: Icons.chat_bubble_outline_rounded,
             maxLines: 5,
             validator: (value) {
-              if (value == null || value.isEmpty) {
+              if (value == null || value.trim().isEmpty) {
                 return 'Please enter your message';
               }
-              if (value.length < 10) {
+              if (value.trim().length < 10) {
                 return 'Message must be at least 10 characters';
               }
               return null;
@@ -95,9 +94,21 @@ class _ContactFormState extends State<ContactForm> {
           ),
           const SizedBox(height: 24),
           _isSubmitting
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.primary,
+              ? Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.surfaceElevated,
+                    ),
+                    child: const SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: AppColors.accentCyan,
+                      ),
+                    ),
                   ),
                 )
               : AnimatedGradientButton(
@@ -122,32 +133,35 @@ class _ContactFormState extends State<ContactForm> {
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
-      style: AppTextStyles.body(context).copyWith(color: Colors.white),
+      style: const TextStyle(color: Colors.white, fontSize: 14.5),
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: AppColors.textMuted),
+        labelStyle: const TextStyle(color: AppColors.textMuted, fontSize: 13.5),
         prefixIcon: Icon(icon, color: AppColors.primaryLight, size: 20),
         filled: true,
         fillColor: AppColors.cardDark,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.surfaceBorder),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.surfaceBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.8),
+          borderRadius: BorderRadius.circular(14),
+          borderSide:
+              const BorderSide(color: AppColors.primaryLight, width: 1.8),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.error, width: 1),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.2),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.error, width: 1.8),
         ),
       ),
@@ -160,10 +174,10 @@ class _ContactFormState extends State<ContactForm> {
 
       try {
         final success = await EmailService.sendEmail(
-          senderName: _nameController.text,
-          senderEmail: _emailController.text,
-          subject: _subjectController.text,
-          message: _messageController.text,
+          senderName: _nameController.text.trim(),
+          senderEmail: _emailController.text.trim(),
+          subject: _subjectController.text.trim(),
+          message: _messageController.text.trim(),
         );
 
         if (mounted) {
@@ -172,7 +186,7 @@ class _ContactFormState extends State<ContactForm> {
           if (success) {
             ToastService.show(
               context,
-              message: 'Message sent successfully! I\'ll get back to you soon.',
+              message: 'Message sent successfully! I will get back to you shortly.',
               type: ToastType.success,
             );
 
@@ -184,7 +198,7 @@ class _ContactFormState extends State<ContactForm> {
           } else {
             ToastService.show(
               context,
-              message: 'Failed to send message. Please try again.',
+              message: 'Failed to deliver message. Please try direct email or LinkedIn.',
               type: ToastType.error,
             );
           }

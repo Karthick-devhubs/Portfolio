@@ -6,9 +6,11 @@ import '../utils/app_text_styles.dart';
 import '../utils/responsive.dart';
 import '../widgets/animated_button.dart';
 import '../widgets/glassmorphism_container.dart';
+import '../widgets/particle_background.dart';
+import '../widgets/tilt_card.dart';
 import '../widgets/toast_service.dart';
 
-/// Detailed project view page styled with Astra AI dark glassmorphism.
+/// Detailed project view page styled with cyber-dark glassmorphism and ambient aura.
 class ProjectDetailPage extends StatelessWidget {
   final ProjectModel project;
 
@@ -18,35 +20,43 @@ class ProjectDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: CustomScrollView(
-        slivers: [
-          _buildAppBar(context),
-          SliverToBoxAdapter(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: Responsive.contentWidth(context),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeader(context),
-                      const SizedBox(height: 32),
-                      _buildDescription(context),
-                      const SizedBox(height: 32),
-                      _buildFeatures(context),
-                      const SizedBox(height: 32),
-                      _buildTechStack(context),
-                      const SizedBox(height: 32),
-                      _buildActions(context),
-                      const SizedBox(height: 48),
-                    ],
+      body: Stack(
+        children: [
+          const Positioned.fill(child: ParticleBackground()),
+          CustomScrollView(
+            slivers: [
+              _buildAppBar(context),
+              SliverToBoxAdapter(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: Responsive.contentWidth(context),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 32,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildHeader(context),
+                          const SizedBox(height: 32),
+                          _buildDescription(context),
+                          const SizedBox(height: 32),
+                          _buildFeatures(context),
+                          const SizedBox(height: 32),
+                          _buildTechStack(context),
+                          const SizedBox(height: 32),
+                          _buildActions(context),
+                          const SizedBox(height: 60),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),
@@ -57,9 +67,21 @@ class ProjectDetailPage extends StatelessWidget {
     return SliverAppBar(
       expandedHeight: 280,
       pinned: true,
-      backgroundColor: AppColors.cardDark,
+      backgroundColor: AppColors.cardDark.withValues(alpha: 0.9),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+        icon: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: AppColors.cardDark.withValues(alpha: 0.8),
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.surfaceBorder),
+          ),
+          child: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+            size: 18,
+          ),
+        ),
         onPressed: () => Navigator.pop(context),
       ),
       flexibleSpace: FlexibleSpaceBar(
@@ -75,7 +97,7 @@ class ProjectDetailPage extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          AppColors.background.withValues(alpha: 0.9),
+                          AppColors.background.withValues(alpha: 0.95),
                         ],
                       ),
                     ),
@@ -89,10 +111,16 @@ class ProjectDetailPage extends StatelessWidget {
 
   Widget _buildImage() {
     final imageUrl = project.imageUrl!;
-    return Image.asset(
-      imageUrl,
-      fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+    return Padding(
+      padding: const EdgeInsets.all(40),
+      child: Center(
+        child: Image.asset(
+          imageUrl,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) =>
+              _buildPlaceholderImage(),
+        ),
+      ),
     );
   }
 
@@ -116,8 +144,8 @@ class ProjectDetailPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: 10,
+          runSpacing: 10,
           children: [
             _buildBadge(
               project.status.name.toUpperCase(),
@@ -129,14 +157,16 @@ class ProjectDetailPage extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
         Text(
           project.title,
-          style: AppTextStyles.sectionTitle(context),
+          style: AppTextStyles.sectionTitle(context).copyWith(
+            fontSize: 32,
+          ),
         ),
         const SizedBox(height: 8),
         Text(
-          'Created ${_formatDate(project.createdAt)}',
+          'Project Timeline • ${_formatDate(project.createdAt)}',
           style: AppTextStyles.bodySmall(context).copyWith(
             color: AppColors.textMuted,
           ),
@@ -147,17 +177,17 @@ class ProjectDetailPage extends StatelessWidget {
 
   Widget _buildBadge(String text, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
       ),
       child: Text(
         text,
         style: TextStyle(
           color: color,
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.4,
         ),
@@ -166,120 +196,160 @@ class ProjectDetailPage extends StatelessWidget {
   }
 
   Widget _buildDescription(BuildContext context) {
-    return GlassmorphismContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'About the Project',
-            style: AppTextStyles.subtitle(context).copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
+    return TiltCard(
+      maxTiltAngle: 4,
+      borderRadius: 18,
+      child: GlassmorphismContainer(
+        borderRadius: 18,
+        padding: const EdgeInsets.all(28),
+        enableHoverGlow: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ShaderMask(
+              shaderCallback: (bounds) =>
+                  AppColors.heroGradient.createShader(bounds),
+              child: const Text(
+                'About the Project',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            project.description,
-            style: AppTextStyles.body(context).copyWith(height: 1.8),
-          ),
-        ],
+            const SizedBox(height: 14),
+            Text(
+              project.description,
+              style: AppTextStyles.body(context).copyWith(
+                fontSize: 15,
+                height: 1.8,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildFeatures(BuildContext context) {
-    return GlassmorphismContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Key Features',
-            style: AppTextStyles.subtitle(context).copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 16),
-          ...project.features.map(
-            (feature) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 4),
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.check_rounded,
-                      size: 14,
-                      color: AppColors.primaryLight,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      feature,
-                      style: AppTextStyles.body(context),
-                    ),
-                  ),
-                ],
+    return TiltCard(
+      maxTiltAngle: 4,
+      borderRadius: 18,
+      child: GlassmorphismContainer(
+        borderRadius: 18,
+        padding: const EdgeInsets.all(28),
+        enableHoverGlow: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ShaderMask(
+              shaderCallback: (bounds) =>
+                  AppColors.cyberGradient.createShader(bounds),
+              child: const Text(
+                'Key Architectural Features',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            ...project.features.map(
+              (feature) => Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 4),
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.check_rounded,
+                        size: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Text(
+                        feature,
+                        style: AppTextStyles.body(context).copyWith(
+                          fontSize: 14.5,
+                          height: 1.6,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildTechStack(BuildContext context) {
-    return GlassmorphismContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Technologies Used',
-            style: AppTextStyles.subtitle(context).copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
+    return TiltCard(
+      maxTiltAngle: 4,
+      borderRadius: 18,
+      child: GlassmorphismContainer(
+        borderRadius: 18,
+        padding: const EdgeInsets.all(28),
+        enableHoverGlow: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Technologies & Libraries',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: project.techStack.map((tech) {
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  tech,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
+            const SizedBox(height: 18),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: project.techStack.map((tech) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
                   ),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceElevated,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: AppColors.surfaceBorder),
+                  ),
+                  child: Text(
+                    tech,
+                    style: const TextStyle(
+                      color: AppColors.accentCyan,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildActions(BuildContext context) {
     final hasLive = project.liveUrl != null && project.liveUrl!.isNotEmpty;
-    final hasGithub = project.githubUrl != null && project.githubUrl!.isNotEmpty;
+    final hasGithub =
+        project.githubUrl != null && project.githubUrl!.isNotEmpty;
 
     if (!hasLive && !hasGithub) return const SizedBox.shrink();
 
@@ -289,13 +359,13 @@ class ProjectDetailPage extends StatelessWidget {
       children: [
         if (hasLive)
           AnimatedGradientButton(
-            text: 'View Live Demo',
-            icon: Icons.launch_rounded,
+            text: 'Launch Live Demo',
+            icon: Icons.rocket_launch_rounded,
             onPressed: () => _launchUrl(context, project.liveUrl!),
           ),
         if (hasGithub)
           AnimatedGradientButton(
-            text: 'View on GitHub',
+            text: 'View Source Code',
             icon: Icons.code_rounded,
             isSecondary: true,
             onPressed: () => _launchUrl(context, project.githubUrl!),
@@ -341,7 +411,7 @@ class ProjectDetailPage extends StatelessWidget {
       if (context.mounted) {
         ToastService.show(
           context,
-          message: 'Could not open URL',
+          message: 'Could not open URL: $url',
           type: ToastType.error,
         );
       }

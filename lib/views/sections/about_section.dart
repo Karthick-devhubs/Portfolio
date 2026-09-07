@@ -5,9 +5,11 @@ import '../../models/enhanced_portfolio_data.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_text_styles.dart';
 import '../../utils/responsive.dart';
+import '../../widgets/animated_counter.dart';
 import '../../widgets/animated_on_scroll.dart';
 import '../../widgets/glassmorphism_container.dart';
 import '../../widgets/section_container.dart';
+import '../../widgets/tilt_card.dart';
 
 /// About Me section with Astra AI glassmorphic styling and ambient lighting.
 class AboutSection extends StatefulWidget {
@@ -47,9 +49,16 @@ class _AboutSectionState extends State<AboutSection>
       sectionKey: controller.aboutKey,
       title: 'About Me',
       child: AnimatedOnScroll(
-        child: isMobile
-            ? _buildMobileLayout(context)
-            : _buildDesktopLayout(context),
+        child: Column(
+          children: [
+            isMobile
+                ? _buildMobileLayout(context)
+                : _buildDesktopLayout(context),
+            const SizedBox(height: 48),
+            // Core Engineering Pillars
+            _buildEngineeringPillars(context),
+          ],
+        ),
       ),
     );
   }
@@ -62,7 +71,7 @@ class _AboutSectionState extends State<AboutSection>
         _buildAvatar(context),
         const SizedBox(width: 48),
         // About content
-        Expanded(child: _buildContent(context)),
+        Expanded(child: _buildBioContent(context)),
       ],
     );
   }
@@ -83,7 +92,7 @@ class _AboutSectionState extends State<AboutSection>
           child: _buildAvatar(context),
         ),
         const SizedBox(height: 32),
-        _buildContent(context),
+        _buildBioContent(context),
       ],
     );
   }
@@ -118,8 +127,10 @@ class _AboutSectionState extends State<AboutSection>
     );
   }
 
-  Widget _buildContent(BuildContext context) {
+  Widget _buildBioContent(BuildContext context) {
     return GlassmorphismContainer(
+      padding: const EdgeInsets.all(32),
+      enableHoverGlow: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,23 +138,33 @@ class _AboutSectionState extends State<AboutSection>
             shaderCallback: (bounds) =>
                 AppColors.heroGradient.createShader(bounds),
             child: Text(
-              "Who I Am",
-              style: AppTextStyles.subtitle(
-                context,
-              ).copyWith(color: Colors.white, fontWeight: FontWeight.w700),
+              "Building High-Impact Cross-Platform Experiences",
+              style: AppTextStyles.subtitle(context).copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 22,
+              ),
             ),
           ),
           const SizedBox(height: 16),
-          Text(EnhancedPortfolioData.about, style: AppTextStyles.body(context)),
-          const SizedBox(height: 28),
-          // Quick stats
+          Text(
+            EnhancedPortfolioData.about,
+            style: AppTextStyles.body(context).copyWith(
+              fontSize: 15.5,
+              height: 1.8,
+            ),
+          ),
+          const SizedBox(height: 32),
+
+          // Animated Stat Counters
           Wrap(
-            spacing: 32,
-            runSpacing: 16,
+            spacing: 36,
+            runSpacing: 20,
             children: [
-              _buildStat(context, '1+', 'Years Exp'),
-              _buildStat(context, '6+', 'Projects'),
-              _buildStat(context, '10+', 'Tech Stacks'),
+              _buildStatCounter(context, 1, '+', 'Years Experience'),
+              _buildStatCounter(context, 6, '+', 'Production Apps'),
+              _buildStatCounter(context, 10, '+', 'Tech Stacks'),
+              _buildStatCounter(context, 100, '%', 'Clean Code Architecture'),
             ],
           ),
         ],
@@ -151,29 +172,147 @@ class _AboutSectionState extends State<AboutSection>
     );
   }
 
-  Widget _buildStat(BuildContext context, String value, String label) {
+  Widget _buildStatCounter(
+    BuildContext context,
+    int value,
+    String suffix,
+    String label,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ShaderMask(
-          shaderCallback: (bounds) =>
-              AppColors.heroGradient.createShader(bounds),
-          child: Text(
-            value,
-            style: AppTextStyles.sectionTitle(
-              context,
-            ).copyWith(color: Colors.white, fontSize: 28),
+        AnimatedCounter(
+          targetValue: value,
+          suffix: suffix,
+          style: AppTextStyles.sectionTitle(context).copyWith(
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
           ),
+          gradient: AppColors.cyberGradient,
         ),
         const SizedBox(height: 4),
         Text(
           label,
           style: AppTextStyles.bodySmall(context).copyWith(
-            color: AppColors.textMuted,
-            fontWeight: FontWeight.w500,
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
     );
   }
+
+  Widget _buildEngineeringPillars(BuildContext context) {
+    final pillars = [
+      _PillarItem(
+        icon: Icons.architecture_rounded,
+        title: 'Clean Architecture',
+        description:
+            'Modular, testable code separating domain, data, and presentation layers for long-term scalability.',
+        color: AppColors.primary,
+      ),
+      _PillarItem(
+        icon: Icons.speed_rounded,
+        title: '60/120 FPS Performance',
+        description:
+            'Optimized widget build cycles, lazy rendering, and lightweight state management with GetX.',
+        color: AppColors.accentCyan,
+      ),
+      _PillarItem(
+        icon: Icons.auto_awesome_rounded,
+        title: 'Pixel-Perfect UI/UX',
+        description:
+            'Fluid animations, dynamic micro-interactions, responsive grids, and modern cyber aesthetics.',
+        color: AppColors.secondary,
+      ),
+      _PillarItem(
+        icon: Icons.cloud_sync_rounded,
+        title: 'API & Cloud Integration',
+        description:
+            'Real-time WebSocket & Firebase synchronization, secure REST APIs, and background job handling.',
+        color: AppColors.accent,
+      ),
+    ];
+
+    final isMobile = Responsive.isMobile(context);
+    final width = Responsive.contentWidth(context);
+    final cardWidth = isMobile ? width : (width - 48) / 2;
+
+    return Wrap(
+      spacing: 24,
+      runSpacing: 24,
+      children: pillars.map((pillar) {
+        return SizedBox(
+          width: cardWidth,
+          child: TiltCard(
+            maxTiltAngle: 6,
+            borderRadius: 18,
+            child: GlassmorphismContainer(
+              borderRadius: 18,
+              padding: const EdgeInsets.all(24),
+              enableHoverGlow: true,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: pillar.color.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: pillar.color.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    child: Center(
+                      child: Icon(pillar.icon, color: pillar.color, size: 24),
+                    ),
+                  ),
+                  const SizedBox(width: 18),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          pillar.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          pillar.description,
+                          style: AppTextStyles.bodySmall(context).copyWith(
+                            fontSize: 13.5,
+                            height: 1.6,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _PillarItem {
+  final IconData icon;
+  final String title;
+  final String description;
+  final Color color;
+
+  _PillarItem({
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.color,
+  });
 }

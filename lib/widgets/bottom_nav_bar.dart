@@ -1,8 +1,10 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../utils/app_colors.dart';
 
-/// Bottom navigation bar for mobile devices with Astra AI aesthetic.
-class BottomNavBar extends StatefulWidget {
+/// Floating bottom dock navigation bar for mobile devices with glowing active states.
+class BottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onNavigate;
 
@@ -13,63 +15,42 @@ class BottomNavBar extends StatefulWidget {
   });
 
   @override
-  State<BottomNavBar> createState() => _BottomNavBarState();
-}
-
-class _BottomNavBarState extends State<BottomNavBar>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-  }
-
-  @override
-  void didUpdateWidget(BottomNavBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.currentIndex != widget.currentIndex) {
-      _controller.forward(from: 0);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       decoration: BoxDecoration(
-        color: AppColors.cardDark.withValues(alpha: 0.95),
-        border: const Border(
-          top: BorderSide(color: AppColors.surfaceBorder, width: 1),
-        ),
+        color: AppColors.cardDark.withValues(alpha: 0.88),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppColors.surfaceBorder, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
+            color: Colors.black.withValues(alpha: 0.45),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.15),
+            blurRadius: 30,
+            spreadRadius: 1,
           ),
         ],
       ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home_rounded, 'Home', 0),
-              _buildNavItem(Icons.work_rounded, 'Projects', 3),
-              _buildNavItem(Icons.person_rounded, 'About', 1),
-              _buildNavItem(Icons.mail_rounded, 'Contact', 5),
-            ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(Icons.home_rounded, 'Home', 0),
+                _buildNavItem(Icons.person_rounded, 'About', 1),
+                _buildNavItem(Icons.bolt_rounded, 'Skills', 2),
+                _buildNavItem(Icons.rocket_launch_rounded, 'Projects', 3),
+                _buildNavItem(Icons.mail_rounded, 'Contact', 5),
+              ],
+            ),
           ),
         ),
       ),
@@ -77,53 +58,52 @@ class _BottomNavBarState extends State<BottomNavBar>
   }
 
   Widget _buildNavItem(IconData icon, String label, int index) {
-    final isActive = widget.currentIndex == index;
-    return InkWell(
-      onTap: () => widget.onNavigate(index),
-      borderRadius: BorderRadius.circular(16),
+    final isActive = currentIndex == index;
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onNavigate(index);
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeOutCubic,
         padding: EdgeInsets.symmetric(
-          horizontal: isActive ? 20 : 12,
-          vertical: 8,
+          horizontal: isActive ? 16 : 10,
+          vertical: 6,
         ),
         decoration: BoxDecoration(
           gradient: isActive ? AppColors.primaryGradient : null,
-          borderRadius: BorderRadius.circular(14),
+          color: isActive ? null : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.35),
-                    blurRadius: 14,
+                    color: AppColors.primary.withValues(alpha: 0.4),
+                    blurRadius: 12,
                     spreadRadius: 1,
                   ),
                 ]
               : null,
         ),
-        child: Column(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AnimatedScale(
-              scale: isActive ? 1.08 : 1.0,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeOutCubic,
-              child: Icon(
-                icon,
-                color: isActive ? Colors.white : AppColors.textMuted,
-                size: 22,
-              ),
+            Icon(
+              icon,
+              color: isActive ? Colors.white : AppColors.textMuted,
+              size: 20,
             ),
-            const SizedBox(height: 4),
-            AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 250),
-              style: TextStyle(
-                fontSize: isActive ? 12 : 11,
-                color: isActive ? Colors.white : AppColors.textMuted,
-                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+            if (isActive) ...[
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              child: Text(label),
-            ),
+            ],
           ],
         ),
       ),

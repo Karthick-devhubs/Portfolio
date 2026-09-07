@@ -2,45 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
-/// Centralized typography for the portfolio app inspired by Astra AI.
+/// Centralized typography for the portfolio app.
 class AppTextStyles {
   // Headings — Bold, modern, punchy display font
   static TextStyle heroTitle(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final size = width < 600
-        ? 34.0
+        ? 36.0
         : width < 1024
-            ? 52.0
+            ? 54.0
             : 68.0;
     return GoogleFonts.plusJakartaSans(
       fontSize: size,
       fontWeight: FontWeight.w800,
       color: AppColors.textPrimary,
-      letterSpacing: -1.0,
-      height: 1.15,
+      letterSpacing: -1.5,
+      height: 1.12,
     );
   }
 
   static TextStyle sectionTitle(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final size = width < 600 ? 26.0 : 36.0;
+    final size = width < 600 ? 28.0 : 38.0;
     return GoogleFonts.plusJakartaSans(
       fontSize: size,
       fontWeight: FontWeight.w800,
       color: AppColors.textPrimary,
-      letterSpacing: -0.5,
+      letterSpacing: -0.8,
     );
   }
 
   // Subheadings
   static TextStyle subtitle(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final size = width < 600 ? 17.0 : 22.0;
+    final size = width < 600 ? 18.0 : 22.0;
     return GoogleFonts.plusJakartaSans(
       fontSize: size,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w700,
       color: AppColors.textSecondary,
-      letterSpacing: -0.2,
+      letterSpacing: -0.3,
     );
   }
 
@@ -83,7 +83,7 @@ class AppTextStyles {
 
   static TextStyle navItem(BuildContext context) {
     return GoogleFonts.plusJakartaSans(
-      fontSize: 15,
+      fontSize: 14.5,
       fontWeight: FontWeight.w600,
       color: AppColors.textSecondary,
       letterSpacing: 0.1,
@@ -95,7 +95,7 @@ class AppTextStyles {
       fontSize: 20,
       fontWeight: FontWeight.w700,
       color: AppColors.textPrimary,
-      letterSpacing: -0.3,
+      letterSpacing: -0.4,
     );
   }
 
@@ -113,6 +113,14 @@ class AppTextStyles {
       fontSize: 14,
       fontWeight: FontWeight.w600,
       color: AppColors.secondary,
+    );
+  }
+
+  static TextStyle code(BuildContext context) {
+    return GoogleFonts.firaCode(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: AppColors.accentCyan,
     );
   }
 }
