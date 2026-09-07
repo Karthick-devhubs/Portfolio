@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../controllers/portfolio_controller.dart';
 import '../../models/enhanced_portfolio_data.dart';
@@ -360,107 +361,286 @@ class _HeroSectionState extends State<HeroSection>
   }
 
   Widget _buildHeroGraphic(BuildContext context) {
+    return _HolographicIdeTerminal(
+      orbitController: _orbitController,
+      pulseController: _pulseController,
+    );
+  }
+}
+
+/// Interactive Holographic IDE Terminal with 3D perspective tilt,
+/// multi-tab code exploration, live Hot-Reload trigger, and orbital holographic tracks.
+class _HolographicIdeTerminal extends StatefulWidget {
+  final AnimationController orbitController;
+  final AnimationController pulseController;
+
+  const _HolographicIdeTerminal({
+    required this.orbitController,
+    required this.pulseController,
+  });
+
+  @override
+  State<_HolographicIdeTerminal> createState() => _HolographicIdeTerminalState();
+}
+
+class _HolographicIdeTerminalState extends State<_HolographicIdeTerminal> {
+  bool _isHovered = false;
+  int _selectedTab = 0; // 0: developer.dart, 1: tech_stack.json, 2: terminal.log
+  double _tiltX = 0.0;
+  double _tiltY = 0.0;
+  Offset _sheenPos = const Offset(0.5, 0.5);
+  bool _isReloading = false;
+  String _statusMessage = '0 errors • Synced';
+
+  void _triggerReload() async {
+    if (_isReloading) return;
+    HapticFeedback.lightImpact();
+    setState(() {
+      _isReloading = true;
+      _statusMessage = '⚡ Compiling kernel...';
+    });
+    await Future.delayed(const Duration(milliseconds: 320));
+    if (mounted) {
+      setState(() {
+        _isReloading = false;
+        _statusMessage = '✓ Hot Reload in 118ms (synced)';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final isMobile = Responsive.isMobile(context);
-    final size = isMobile ? 260.0 : 340.0;
+    final cardWidth = isMobile ? 305.0 : 410.0;
+    final cardHeight = isMobile ? 240.0 : 285.0;
+    final stackWidth = cardWidth + (isMobile ? 55.0 : 85.0);
+    final stackHeight = cardHeight + (isMobile ? 60.0 : 85.0);
 
     return Center(
       child: SizedBox(
-        width: size + 60,
-        height: size + 60,
+        width: stackWidth,
+        height: stackHeight,
         child: Stack(
           alignment: Alignment.center,
+          clipBehavior: Clip.none,
           children: [
-            // Outer glowing ambient ring
-            Container(
-              width: size * 0.95,
-              height: size * 0.95,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.primary.withValues(alpha: 0.35),
-                    AppColors.secondary.withValues(alpha: 0.15),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
+            // 1. Holographic Elliptical Orbital Track Guide
+            AnimatedBuilder(
+              animation: widget.pulseController,
+              builder: (context, child) {
+                return CustomPaint(
+                  size: Size(stackWidth, stackHeight),
+                  painter: _OrbitTrackPainter(
+                    pulse: widget.pulseController.value,
+                  ),
+                );
+              },
             ),
 
-            // Rotating sweep aura
+            // 2. Ambient Dynamic Glow Aura Backdrop
             AnimatedBuilder(
-              animation: _orbitController,
+              animation: widget.pulseController,
               builder: (context, child) {
-                return Transform.rotate(
-                  angle: _orbitController.value * 2 * pi,
-                  child: Container(
-                    width: size + 20,
-                    height: size + 20,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.secondary.withValues(alpha: 0.3),
-                        width: 1.5,
-                      ),
+                final pulse = widget.pulseController.value;
+                return Container(
+                  width: cardWidth * (0.92 + 0.08 * pulse),
+                  height: cardHeight * (0.92 + 0.08 * pulse),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(32),
+                    gradient: RadialGradient(
+                      colors: [
+                        AppColors.primary.withValues(alpha: 0.28 + 0.08 * pulse),
+                        AppColors.secondary.withValues(alpha: 0.15),
+                        Colors.transparent,
+                      ],
                     ),
                   ),
                 );
               },
             ),
 
-            // Center Avatar Container with Gradient Glow Border
-            Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: AppColors.cyberGradient,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.45),
-                    blurRadius: 36,
-                    spreadRadius: 4,
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/my_image.png',
-                    fit: BoxFit.cover,
+            // 3. Main Holographic IDE Window with 3D Perspective Tilt & Specular Sheen
+            MouseRegion(
+              onEnter: (_) => setState(() => _isHovered = true),
+              onExit: (_) {
+                setState(() {
+                  _isHovered = false;
+                  _tiltX = 0.0;
+                  _tiltY = 0.0;
+                });
+              },
+              onHover: (event) {
+                final local = event.localPosition;
+                final dx = (local.dx - cardWidth / 2) / (cardWidth / 2);
+                final dy = (local.dy - cardHeight / 2) / (cardHeight / 2);
+                setState(() {
+                  _tiltX = -dy * 0.05;
+                  _tiltY = dx * 0.05;
+                  _sheenPos = Offset(
+                    (local.dx / cardWidth).clamp(0.0, 1.0),
+                    (local.dy / cardHeight).clamp(0.0, 1.0),
+                  );
+                  _isHovered = true;
+                });
+              },
+              child: AnimatedScale(
+                scale: _isHovered ? 1.025 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOutCubic,
+                child: Transform(
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, 0.001)
+                    ..rotateX(_tiltX)
+                    ..rotateY(_tiltY),
+                  alignment: FractionalOffset.center,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeOutCubic,
+                    width: cardWidth,
+                    height: cardHeight,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFF0D0F16),
+                          Color(0xFF131622),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      border: Border.all(
+                        color: _isHovered
+                            ? AppColors.secondary.withValues(alpha: 0.7)
+                            : AppColors.surfaceBorder,
+                        width: 1.3,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(
+                            alpha: _isHovered ? 0.38 : 0.22,
+                          ),
+                          blurRadius: _isHovered ? 38 : 24,
+                          spreadRadius: _isHovered ? 2 : 0,
+                          offset: const Offset(0, 10),
+                        ),
+                        BoxShadow(
+                          color: AppColors.secondary.withValues(
+                            alpha: _isHovered ? 0.24 : 0.12,
+                          ),
+                          blurRadius: 20,
+                          spreadRadius: -2,
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.7),
+                          blurRadius: 30,
+                          offset: const Offset(0, 18),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(18),
+                      child: Stack(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Header / Tab Bar
+                              _buildHeaderBar(isMobile),
+                              // Code / Terminal Body Surface
+                              Expanded(
+                                child: _buildEditorSurface(isMobile),
+                              ),
+                              // Footer Status Bar
+                              _buildStatusBar(isMobile),
+                            ],
+                          ),
+                          // Dynamic Glass Specular Sheen Reflection
+                          if (_isHovered)
+                            Positioned.fill(
+                              child: IgnorePointer(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18),
+                                    gradient: RadialGradient(
+                                      center: Alignment(
+                                        (_sheenPos.dx - 0.5) * 2,
+                                        (_sheenPos.dy - 0.5) * 2,
+                                      ),
+                                      radius: 0.9,
+                                      colors: [
+                                        Colors.white.withValues(alpha: 0.07),
+                                        Colors.transparent,
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          // Hot Reload Pulse Flash Overlay
+                          if (_isReloading)
+                            Positioned.fill(
+                              child: IgnorePointer(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18),
+                                    color: AppColors.primary.withValues(alpha: 0.12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
 
-            // Orbiting Tech Badges
+            // 4. Orbiting & Floating Tech Satellites (5 High-Impact Badges)
             _buildOrbitBadge(
-              angle: 0.2,
-              distance: size * 0.54,
-              label: 'Flutter',
+              angle: 0.25,
+              radiusX: cardWidth * 0.55,
+              radiusY: cardHeight * 0.55,
+              label: 'Flutter 3.x',
               icon: Icons.flutter_dash_rounded,
-              color: const Color(0xFF02569B),
+              color: const Color(0xFF38BDF8),
+              isMobile: isMobile,
             ),
             _buildOrbitBadge(
-              angle: 2.1,
-              distance: size * 0.54,
-              label: 'Dart',
-              icon: Icons.code_rounded,
-              color: const Color(0xFF0175C2),
+              angle: 1.5,
+              radiusX: cardWidth * 0.55,
+              radiusY: cardHeight * 0.55,
+              label: 'Clean Arch',
+              icon: Icons.layers_rounded,
+              color: AppColors.secondary,
+              isMobile: isMobile,
             ),
             _buildOrbitBadge(
-              angle: 3.9,
-              distance: size * 0.54,
+              angle: 2.75,
+              radiusX: cardWidth * 0.55,
+              radiusY: cardHeight * 0.55,
+              label: 'AI & ML',
+              icon: Icons.auto_awesome_rounded,
+              color: AppColors.accent,
+              isMobile: isMobile,
+            ),
+            _buildOrbitBadge(
+              angle: 4.0,
+              radiusX: cardWidth * 0.55,
+              radiusY: cardHeight * 0.55,
               label: 'Firebase',
               icon: Icons.local_fire_department_rounded,
               color: const Color(0xFFFFA000),
+              isMobile: isMobile,
             ),
             _buildOrbitBadge(
-              angle: 5.2,
-              distance: size * 0.54,
-              label: 'GetX',
-              icon: Icons.flash_on_rounded,
-              color: AppColors.secondary,
+              angle: 5.25,
+              radiusX: cardWidth * 0.55,
+              radiusY: cardHeight * 0.55,
+              label: '99.9% Robust',
+              icon: Icons.verified_rounded,
+              color: const Color(0xFF10B981),
+              isMobile: isMobile,
             ),
           ],
         ),
@@ -468,50 +648,592 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
+  Widget _buildHeaderBar(bool isMobile) {
+    return Container(
+      height: isMobile ? 32 : 36,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: const BoxDecoration(
+        color: Color(0xFF0A0C12),
+        border: Border(
+          bottom: BorderSide(color: Color(0xFF1B1E2E), width: 1),
+        ),
+      ),
+      child: Row(
+        children: [
+          // macOS window buttons
+          const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _WindowDot(color: Color(0xFFFF5F56)),
+              SizedBox(width: 5),
+              _WindowDot(color: Color(0xFFFFBD2E)),
+              SizedBox(width: 5),
+              _WindowDot(color: Color(0xFF27C93F)),
+            ],
+          ),
+          SizedBox(width: isMobile ? 6 : 10),
+          // Scrollable Tabs so it never overflows on any viewport
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildTabItem(
+                    index: 0,
+                    icon: Icons.flutter_dash_rounded,
+                    iconColor: const Color(0xFF38BDF8),
+                    title: isMobile ? 'dev.dart' : 'developer.dart',
+                    isMobile: isMobile,
+                  ),
+                  const SizedBox(width: 4),
+                  _buildTabItem(
+                    index: 1,
+                    icon: Icons.data_object_rounded,
+                    iconColor: AppColors.secondary,
+                    title: isMobile ? 'stack.json' : 'tech_stack.json',
+                    isMobile: isMobile,
+                  ),
+                  const SizedBox(width: 4),
+                  _buildTabItem(
+                    index: 2,
+                    icon: Icons.terminal_rounded,
+                    iconColor: AppColors.accentCyan,
+                    title: isMobile ? 'term.sh' : 'terminal.sh',
+                    isMobile: isMobile,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          // Interactive Hot-Reload / Run Trigger Button
+          GestureDetector(
+            onTap: _triggerReload,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 6 : 8,
+                  vertical: 2.5,
+                ),
+                decoration: BoxDecoration(
+                  color: _isReloading
+                      ? AppColors.primary.withValues(alpha: 0.35)
+                      : AppColors.cardDark.withValues(alpha: 0.8),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: _isReloading
+                        ? AppColors.primaryLight
+                        : AppColors.surfaceBorder,
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      _isReloading ? Icons.refresh_rounded : Icons.bolt_rounded,
+                      size: isMobile ? 11 : 12,
+                      color: AppColors.accent,
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      _isReloading ? 'SYNC' : '60 FPS',
+                      style: GoogleFonts.jetBrainsMono(
+                        color: _isReloading
+                            ? AppColors.textPrimary
+                            : AppColors.textMuted,
+                        fontSize: isMobile ? 8.0 : 9.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabItem({
+    required int index,
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required bool isMobile,
+  }) {
+    final isSelected = _selectedTab == index;
+
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.selectionClick();
+        setState(() => _selectedTab = index);
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: EdgeInsets.symmetric(
+            horizontal: isMobile ? 5 : 8,
+            vertical: 3.5,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF141724) : Colors.transparent,
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.primary.withValues(alpha: 0.35)
+                  : Colors.transparent,
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: isMobile ? 10 : 12, color: iconColor),
+              const SizedBox(width: 4),
+              Text(
+                title,
+                style: GoogleFonts.jetBrainsMono(
+                  color: isSelected
+                      ? AppColors.textPrimary
+                      : AppColors.textMuted,
+                  fontSize: isMobile ? 8.5 : 10.0,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
+              ),
+              if (isSelected) ...[
+                const SizedBox(width: 4),
+                Container(
+                  width: 4.5,
+                  height: 4.5,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.success,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEditorSurface(bool isMobile) {
+    final fontSz = isMobile ? 9.5 : 11.0;
+    final lineSpacing = isMobile ? 1.35 : 1.45;
+
+    switch (_selectedTab) {
+      case 1:
+        return _buildJsonCodeView(fontSz, lineSpacing, isMobile);
+      case 2:
+        return _buildTerminalLogView(fontSz, lineSpacing, isMobile);
+      case 0:
+      default:
+        return _buildDartCodeView(fontSz, lineSpacing, isMobile);
+    }
+  }
+
+  Widget _buildDartCodeView(double fontSz, double lineSpacing, bool isMobile) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 8 : 12,
+        vertical: isMobile ? 6 : 8,
+      ),
+      color: const Color(0xFF090A10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Line numbers column
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: List.generate(7, (index) {
+              return Text(
+                '${index + 1}',
+                style: GoogleFonts.jetBrainsMono(
+                  color: const Color(0xFF3F465B),
+                  fontSize: fontSz,
+                  height: lineSpacing,
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            }),
+          ),
+          SizedBox(width: isMobile ? 8 : 12),
+          // Vertical gutter divider
+          Container(
+            width: 1,
+            height: isMobile ? 120 : 145,
+            color: const Color(0xFF1B1E2D),
+          ),
+          SizedBox(width: isMobile ? 8 : 12),
+          // Syntax-highlighted code lines
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildCodeLine([
+                  const _CodeSpan('class ', Color(0xFFB478FF), FontWeight.bold),
+                  const _CodeSpan('FlutterArchitect ', Color(0xFF5B8DEF), FontWeight.bold),
+                  const _CodeSpan('{', Colors.white70),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  final ', Color(0xFFB478FF)),
+                  const _CodeSpan('name = ', AppColors.textSecondary),
+                  const _CodeSpan("'${EnhancedPortfolioData.name}'", Color(0xFFF1AC0C)),
+                  const _CodeSpan(';', Colors.white54),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  final ', Color(0xFFB478FF)),
+                  const _CodeSpan('role = ', AppColors.textSecondary),
+                  const _CodeSpan("'Senior Engineer'", Color(0xFFF1AC0C)),
+                  const _CodeSpan(';', Colors.white54),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  final ', Color(0xFFB478FF)),
+                  const _CodeSpan('architecture = ', AppColors.textSecondary),
+                  const _CodeSpan("'Clean + MVVM'", Color(0xFF00F5D4)),
+                  const _CodeSpan(';', Colors.white54),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  bool ', Color(0xFFB478FF)),
+                  const _CodeSpan('get ready => ', AppColors.textSecondary),
+                  const _CodeSpan('true', Color(0xFF10B981), FontWeight.bold),
+                  const _CodeSpan(';', Colors.white54),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  void ', Color(0xFFB478FF)),
+                  const _CodeSpan('deploy', Color(0xFF38BDF8), FontWeight.w600),
+                  const _CodeSpan('() => ', AppColors.textSecondary),
+                  const _CodeSpan('deliverImpact();', Color(0xFF5B8DEF)),
+                ], fontSz, lineSpacing, showCursor: true),
+                _buildCodeLine([
+                  const _CodeSpan('}', Colors.white70),
+                ], fontSz, lineSpacing),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildJsonCodeView(double fontSz, double lineSpacing, bool isMobile) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 8 : 12,
+        vertical: isMobile ? 6 : 8,
+      ),
+      color: const Color(0xFF090A10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: List.generate(7, (index) {
+              return Text(
+                '${index + 1}',
+                style: GoogleFonts.jetBrainsMono(
+                  color: const Color(0xFF3F465B),
+                  fontSize: fontSz,
+                  height: lineSpacing,
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            }),
+          ),
+          SizedBox(width: isMobile ? 8 : 12),
+          Container(
+            width: 1,
+            height: isMobile ? 120 : 145,
+            color: const Color(0xFF1B1E2D),
+          ),
+          SizedBox(width: isMobile ? 8 : 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildCodeLine([
+                  const _CodeSpan('{', Colors.white70),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  "core": ', Color(0xFFB478FF)),
+                  const _CodeSpan('"Flutter 3.x / Dart"', Color(0xFFF1AC0C)),
+                  const _CodeSpan(',', Colors.white54),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  "state": ', Color(0xFFB478FF)),
+                  const _CodeSpan('["GetX", "Bloc", "Riverpod"]', Color(0xFF00F5D4)),
+                  const _CodeSpan(',', Colors.white54),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  "backend": ', Color(0xFFB478FF)),
+                  const _CodeSpan('["Firebase", "REST", "GraphQL"]', Color(0xFF00F5D4)),
+                  const _CodeSpan(',', Colors.white54),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  "ai_tools": ', Color(0xFFB478FF)),
+                  const _CodeSpan('["Agentic AI", "LLM APIs"]', Color(0xFF10B981)),
+                  const _CodeSpan(',', Colors.white54),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('  "uptime": ', Color(0xFFB478FF)),
+                  const _CodeSpan('"99.9% Crash-Free"', Color(0xFFF1AC0C)),
+                ], fontSz, lineSpacing, showCursor: true),
+                _buildCodeLine([
+                  const _CodeSpan('}', Colors.white70),
+                ], fontSz, lineSpacing),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTerminalLogView(double fontSz, double lineSpacing, bool isMobile) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 8 : 12,
+        vertical: isMobile ? 6 : 8,
+      ),
+      color: const Color(0xFF06070B),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: List.generate(6, (index) {
+              return Text(
+                '${index + 1}',
+                style: GoogleFonts.jetBrainsMono(
+                  color: const Color(0xFF3F465B),
+                  fontSize: fontSz,
+                  height: lineSpacing,
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            }),
+          ),
+          SizedBox(width: isMobile ? 8 : 12),
+          Container(
+            width: 1,
+            height: isMobile ? 120 : 145,
+            color: const Color(0xFF1B1E2D),
+          ),
+          SizedBox(width: isMobile ? 8 : 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildCodeLine([
+                  const _CodeSpan('\$ ', Color(0xFF818CF8), FontWeight.bold),
+                  const _CodeSpan('flutter build web --release', Color(0xFFE2E8F0)),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('[✓] ', Color(0xFF10B981)),
+                  const _CodeSpan('Compiling kernel... ', AppColors.textSecondary),
+                  const _CodeSpan('[0.9s]', Color(0xFF38BDF8)),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('[✓] ', Color(0xFF10B981)),
+                  const _CodeSpan('Zero jank • 60 FPS smooth', Color(0xFF00F5D4)),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('[✓] ', Color(0xFF10B981)),
+                  const _CodeSpan('All 48 test suites passed', AppColors.textSecondary),
+                ], fontSz, lineSpacing),
+                _buildCodeLine([
+                  const _CodeSpan('🚀 ', Colors.white),
+                  const _CodeSpan('Live: Ready for Production!', Color(0xFFF1AC0C), FontWeight.bold),
+                ], fontSz, lineSpacing, showCursor: true),
+                _buildCodeLine([
+                  const _CodeSpan('\$ ', Color(0xFF818CF8)),
+                  const _CodeSpan('listening on port 8080...', Color(0xFF64748B)),
+                ], fontSz, lineSpacing),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCodeLine(
+    List<_CodeSpan> spans,
+    double fontSize,
+    double height, {
+    bool showCursor = false,
+  }) {
+    return RichText(
+      text: TextSpan(
+        style: GoogleFonts.jetBrainsMono(
+          fontSize: fontSize,
+          height: height,
+          letterSpacing: 0.1,
+        ),
+        children: [
+          ...spans.map(
+            (s) => TextSpan(
+              text: s.text,
+              style: TextStyle(
+                color: s.color,
+                fontWeight: s.fontWeight ?? FontWeight.normal,
+              ),
+            ),
+          ),
+          if (showCursor)
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: AnimatedBuilder(
+                animation: widget.pulseController,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: widget.pulseController.value > 0.5 ? 1.0 : 0.0,
+                    child: Container(
+                      width: 6,
+                      height: fontSize * 1.15,
+                      margin: const EdgeInsets.only(left: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.accentCyan,
+                        borderRadius: BorderRadius.circular(1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.accentCyan.withValues(alpha: 0.6),
+                            blurRadius: 5,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusBar(bool isMobile) {
+    return Container(
+      height: isMobile ? 21 : 23,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: const BoxDecoration(
+        color: Color(0xFF07080D),
+        border: Border(
+          top: BorderSide(color: Color(0xFF171A27), width: 1),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.fork_right_rounded,
+            size: isMobile ? 10 : 12,
+            color: const Color(0xFF818CF8),
+          ),
+          const SizedBox(width: 3),
+          Text(
+            'main*',
+            style: GoogleFonts.jetBrainsMono(
+              color: const Color(0xFF818CF8),
+              fontSize: isMobile ? 8.5 : 9.5,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Icon(
+            _isReloading
+                ? Icons.hourglass_top_rounded
+                : Icons.check_circle_outline_rounded,
+            size: isMobile ? 9.5 : 11,
+            color: _isReloading ? AppColors.accent : AppColors.success,
+          ),
+          const SizedBox(width: 3),
+          Expanded(
+            child: Text(
+              _statusMessage,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.jetBrainsMono(
+                color: _isReloading ? AppColors.accent : AppColors.textMuted,
+                fontSize: isMobile ? 8.0 : 9.0,
+              ),
+            ),
+          ),
+          Text(
+            'Dart 3.5 • UTF-8',
+            style: GoogleFonts.jetBrainsMono(
+              color: AppColors.textTertiary,
+              fontSize: isMobile ? 8.0 : 9.0,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildOrbitBadge({
     required double angle,
-    required double distance,
+    required double radiusX,
+    required double radiusY,
     required String label,
     required IconData icon,
     required Color color,
+    required bool isMobile,
   }) {
     return AnimatedBuilder(
-      animation: _orbitController,
+      animation: widget.orbitController,
       builder: (context, child) {
-        final currentAngle = angle + (_orbitController.value * 2 * pi * 0.2);
-        final x = cos(currentAngle) * distance;
-        final y = sin(currentAngle) * distance;
+        final t = widget.orbitController.value * 2 * pi;
+        final currentAngle = angle + (t * 0.22);
+        final x = cos(currentAngle) * (radiusX + 8 * sin(t * 2));
+        final y = sin(currentAngle) * (radiusY + 6 * cos(t * 2));
 
         return Transform.translate(
           offset: Offset(x, y),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 7 : 10,
+              vertical: isMobile ? 4 : 5.5,
+            ),
             decoration: BoxDecoration(
-              color: AppColors.cardDark.withValues(alpha: 0.92),
-              borderRadius: BorderRadius.circular(16),
+              color: const Color(0xFF10121C).withValues(alpha: 0.94),
+              borderRadius: BorderRadius.circular(13),
               border: Border.all(
-                color: color.withValues(alpha: 0.7),
-                width: 1.2,
+                color: color.withValues(alpha: 0.65),
+                width: 1.1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: color.withValues(alpha: 0.35),
+                  color: color.withValues(alpha: 0.32),
                   blurRadius: 12,
                   spreadRadius: 1,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, color: color, size: 14),
-                const SizedBox(width: 5),
+                Icon(icon, color: color, size: isMobile ? 11 : 13),
+                const SizedBox(width: 4.5),
                 Text(
                   label,
-                  style: const TextStyle(
+                  style: GoogleFonts.plusJakartaSans(
                     color: Colors.white,
-                    fontSize: 11,
+                    fontSize: isMobile ? 9.5 : 11,
                     fontWeight: FontWeight.w700,
+                    letterSpacing: -0.2,
                   ),
                 ),
               ],
@@ -521,6 +1243,81 @@ class _HeroSectionState extends State<HeroSection>
       },
     );
   }
+}
+
+/// Subtle holographic elliptical orbit track painter
+class _OrbitTrackPainter extends CustomPainter {
+  final double pulse;
+
+  _OrbitTrackPainter({required this.pulse});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final paint1 = Paint()
+      ..color = AppColors.primary.withValues(alpha: 0.08 + 0.04 * pulse)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    final paint2 = Paint()
+      ..color = AppColors.secondary.withValues(alpha: 0.06 + 0.03 * pulse)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center,
+        width: size.width * 0.94,
+        height: size.height * 0.86,
+      ),
+      paint1,
+    );
+
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center,
+        width: size.width * 0.78,
+        height: size.height * 0.70,
+      ),
+      paint2,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _OrbitTrackPainter oldDelegate) =>
+      oldDelegate.pulse != pulse;
+}
+
+class _WindowDot extends StatelessWidget {
+  final Color color;
+
+  const _WindowDot({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 8.5,
+      height: 8.5,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.4),
+            blurRadius: 3,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CodeSpan {
+  final String text;
+  final Color color;
+  final FontWeight? fontWeight;
+
+  const _CodeSpan(this.text, this.color, [this.fontWeight]);
 }
 
 class _SocialButton extends StatefulWidget {

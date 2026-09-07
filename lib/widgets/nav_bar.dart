@@ -77,66 +77,87 @@ class _NavBarState extends State<NavBar> with TickerProviderStateMixin {
   }
 
   Widget _buildLogo(BuildContext context) {
-    return SizedBox(
-      height: 48,
-      width: 48,
-      child: Stack(
-        children: [
-          // Animated rotating gradient ring
-          RotationTransition(
-            turns: Tween(begin: 0.0, end: 1.0).animate(
-              CurvedAnimation(
-                parent: _animationController,
-                curve: Curves.linear,
-              ),
-            ),
-            child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: SweepGradient(
-                  colors: [
-                    Colors.transparent,
-                    AppColors.primary,
-                    AppColors.secondary,
-                    AppColors.accent,
-                    Colors.transparent,
-                  ],
-                  stops: [0.0, 0.3, 0.6, 0.9, 1.0],
+    final controller = Get.find<PortfolioController>();
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => controller.scrollToSection(0),
+        child: SizedBox(
+          height: 46,
+          width: 46,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Animated rotating gradient aura ring
+              RotationTransition(
+                turns: Tween(begin: 0.0, end: 1.0).animate(
+                  CurvedAnimation(
+                    parent: _animationController,
+                    curve: Curves.linear,
+                  ),
                 ),
-              ),
-              child: Center(
                 child: Container(
-                  height: 44,
-                  width: 44,
+                  height: 46,
+                  width: 46,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.cardDark,
+                    gradient: SweepGradient(
+                      colors: [
+                        Colors.transparent,
+                        AppColors.primary,
+                        AppColors.secondary,
+                        AppColors.accent,
+                        Colors.transparent,
+                      ],
+                      stops: [0.0, 0.3, 0.6, 0.9, 1.0],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
 
-          // Logo image
-          Positioned.fill(
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Container(
+              // Logo container with crisp image rendering & glow
+              Container(
+                height: 40,
+                width: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  image: const DecorationImage(
-                    image: AssetImage('assets/images/logo.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+                  color: const Color(0xFF0C0E14),
                   border: Border.all(
                     color: AppColors.surfaceBorder,
-                    width: 1,
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/logo1.jpg',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.code_rounded,
+                            color: AppColors.primary,
+                            size: 22,
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

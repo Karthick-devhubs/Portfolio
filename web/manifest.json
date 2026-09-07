@@ -1,11 +1,11 @@
 {
-    "name": "portfolio",
-    "short_name": "portfolio",
+    "name": "Karthick | Senior Flutter & AI Engineer",
+    "short_name": "Karthick",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#090A0F",
+    "theme_color": "#3C50E0",
+    "description": "Karthick's Senior Flutter & AI Engineer Portfolio",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
