@@ -7,7 +7,7 @@ import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 import '../utils/responsive.dart';
 
-/// Top navigation bar — responsive with bottom sheet for mobile.
+/// Top navigation bar matching Astra AI's sleek header style.
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
 
@@ -22,7 +22,7 @@ class _NavBarState extends State<NavBar> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 4),
       vsync: this,
     )..repeat();
   }
@@ -42,12 +42,14 @@ class _NavBarState extends State<NavBar> with TickerProviderStateMixin {
       width: double.infinity,
       height: 70,
       decoration: BoxDecoration(
-        color: AppColors.background.withValues(alpha: 0.85),
-        border: Border(bottom: BorderSide(color: AppColors.primary.withValues(alpha: 0.1))),
+        color: AppColors.background.withValues(alpha: 0.88),
+        border: const Border(
+          bottom: BorderSide(color: AppColors.borderSubtle, width: 1),
+        ),
       ),
       child: ClipRect(
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1200),
@@ -59,7 +61,7 @@ class _NavBarState extends State<NavBar> with TickerProviderStateMixin {
                     // Logo
                     _buildLogo(context),
 
-                    // Nav items or menu button
+                    // Nav items
                     if (Responsive.isDesktop(context))
                       _buildDesktopNav(context, controller, themeController)
                     else
@@ -74,75 +76,76 @@ class _NavBarState extends State<NavBar> with TickerProviderStateMixin {
     );
   }
 
-Widget _buildLogo(BuildContext context) {
-  return Container(
-    height: 50,
-    width: 50,
-    child: Stack(
-      children: [
-        // Logo image with padding to show border
-        RotationTransition(
-    turns: Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.linear,
-      ),
-    ),
-    child: Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: SweepGradient(
-          colors: [
-            Colors.transparent,
-            Colors.blue,
-            Colors.purple,
-            Colors.pink,
-            Colors.transparent,
-          ],
-          stops: [0.0, 0.3, 0.6, 0.9, 1.0],
-        ),
-      ),
-      child: Center(
-        child: Container(
-            height: 46,
-            width: 46,
-          // margin: EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.black,
-          ),
-        ),
-      ),
-    ),
-  ),
-        
-        // Animated circular border
-       Positioned.fill(
-  child: Padding(
-          padding: const EdgeInsets.all(3.0),
-          child: Container(
-              height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(22),
-              image: DecorationImage(
-                image: AssetImage('assets/images/logo.jpg'), 
-                fit: BoxFit.cover,
+  Widget _buildLogo(BuildContext context) {
+    return SizedBox(
+      height: 48,
+      width: 48,
+      child: Stack(
+        children: [
+          // Animated rotating gradient ring
+          RotationTransition(
+            turns: Tween(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                parent: _animationController,
+                curve: Curves.linear,
+              ),
+            ),
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: SweepGradient(
+                  colors: [
+                    Colors.transparent,
+                    AppColors.primary,
+                    AppColors.secondary,
+                    AppColors.accent,
+                    Colors.transparent,
+                  ],
+                  stops: [0.0, 0.3, 0.6, 0.9, 1.0],
+                ),
+              ),
+              child: Center(
+                child: Container(
+                  height: 44,
+                  width: 44,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.cardDark,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-),
 
-      ],
-    ),
-  );
-}
+          // Logo image
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: const DecorationImage(
+                    image: AssetImage('assets/images/logo.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                  border: Border.all(
+                    color: AppColors.surfaceBorder,
+                    width: 1,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-
-
-  Widget _buildDesktopNav(BuildContext context, PortfolioController controller, ThemeController themeController) {
+  Widget _buildDesktopNav(
+    BuildContext context,
+    PortfolioController controller,
+    ThemeController themeController,
+  ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -151,35 +154,33 @@ Widget _buildLogo(BuildContext context) {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Obx(() {
               final isActive = controller.currentSection.value == index;
-              return _NavItem(label: controller.navItems[index], isActive: isActive, onTap: () => controller.scrollToSection(index));
+              return _NavItem(
+                label: controller.navItems[index],
+                isActive: isActive,
+                onTap: () => controller.scrollToSection(index),
+              );
             }),
           );
         }),
-        // const SizedBox(width: 8),
-        // // Theme toggle
-        // Obx(
-        //   () => IconButton(
-        //     onPressed: themeController.toggleTheme,
-        //     icon: Icon(themeController.isDarkMode.value ? Icons.light_mode_rounded : Icons.dark_mode_rounded, color: AppColors.secondary, size: 22),
-        //   ),
-        // ),
       ],
     );
   }
 
-  Widget _buildMobileNav(BuildContext context, PortfolioController controller, ThemeController themeController) {
+  Widget _buildMobileNav(
+    BuildContext context,
+    PortfolioController controller,
+    ThemeController themeController,
+  ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Obx(
-          () => IconButton(
-            onPressed: themeController.toggleTheme,
-            icon: Icon(themeController.isDarkMode.value ? Icons.light_mode_rounded : Icons.dark_mode_rounded, color: AppColors.secondary, size: 22),
-          ),
-        ),
         IconButton(
           onPressed: () => _showMobileMenu(context, controller),
-          icon: const Icon(Icons.menu_rounded, color: AppColors.textPrimary, size: 28),
+          icon: const Icon(
+            Icons.menu_rounded,
+            color: AppColors.textPrimary,
+            size: 28,
+          ),
         ),
       ],
     );
@@ -189,8 +190,10 @@ Widget _buildLogo(BuildContext context) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.cardDark,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      transitionAnimationController: AnimationController(vsync: Navigator.of(context), duration: const Duration(milliseconds: 400)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        side: BorderSide(color: AppColors.surfaceBorder, width: 1),
+      ),
       builder: (context) => Container(
         padding: const EdgeInsets.symmetric(vertical: 24),
         child: Column(
@@ -199,27 +202,26 @@ Widget _buildLogo(BuildContext context) {
             Container(
               width: 40,
               height: 4,
-              decoration: BoxDecoration(color: AppColors.textMuted, borderRadius: BorderRadius.circular(2)),
+              decoration: BoxDecoration(
+                color: AppColors.textMuted.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
             const SizedBox(height: 20),
             ...List.generate(controller.navItems.length, (index) {
-              return TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0.0, end: 1.0),
-                duration: Duration(milliseconds: 300 + (index * 50)),
-                curve: Curves.easeOutCubic,
-                builder: (context, value, child) => Transform.translate(
-                  offset: Offset(0, 20 * (1 - value)),
-                  child: Opacity(
-                    opacity: value,
-                    child: ListTile(
-                      title: Text(controller.navItems[index], textAlign: TextAlign.center, style: AppTextStyles.navItem(context).copyWith(fontSize: 18)),
-                      onTap: () {
-                        Navigator.pop(context);
-                        controller.scrollToSection(index);
-                      },
-                    ),
+              return ListTile(
+                title: Text(
+                  controller.navItems[index],
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.navItem(context).copyWith(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                onTap: () {
+                  Navigator.pop(context);
+                  controller.scrollToSection(index);
+                },
               );
             }),
           ],
@@ -234,7 +236,11 @@ class _NavItem extends StatefulWidget {
   final bool isActive;
   final VoidCallback onTap;
 
-  const _NavItem({required this.label, required this.isActive, required this.onTap});
+  const _NavItem({
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
 
   @override
   State<_NavItem> createState() => _NavItemState();
@@ -254,15 +260,31 @@ class _NavItemState extends State<_NavItem> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: widget.isActive ? AppColors.primary.withValues(alpha: 0.15) : (_isHovered ? AppColors.primary.withValues(alpha: 0.08) : Colors.transparent),
+            color: widget.isActive
+                ? AppColors.primary.withValues(alpha: 0.15)
+                : (_isHovered
+                    ? AppColors.surfaceElevated
+                    : Colors.transparent),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: widget.isActive ? AppColors.secondary.withValues(alpha: 0.5) : Colors.transparent, width: 1.5),
+            border: Border.all(
+              color: widget.isActive
+                  ? AppColors.primary
+                  : (_isHovered
+                      ? AppColors.surfaceBorder
+                      : Colors.transparent),
+              width: 1.2,
+            ),
           ),
           child: Text(
             widget.label,
-            style: AppTextStyles.navItem(
-              context,
-            ).copyWith(color: widget.isActive ? AppColors.secondary : (_isHovered ? AppColors.textPrimary : AppColors.textSecondary)),
+            style: AppTextStyles.navItem(context).copyWith(
+              color: widget.isActive
+                  ? Colors.white
+                  : (_isHovered
+                      ? AppColors.textPrimary
+                      : AppColors.textSecondary),
+              fontWeight: widget.isActive ? FontWeight.w700 : FontWeight.w500,
+            ),
           ),
         ),
       ),

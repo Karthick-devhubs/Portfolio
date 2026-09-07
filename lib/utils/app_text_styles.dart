@@ -2,51 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
-/// Centralized typography for the portfolio app.
+/// Centralized typography for the portfolio app inspired by Astra AI.
 class AppTextStyles {
-  // Headings — Orbitron for futuristic feel
+  // Headings — Bold, modern, punchy display font
   static TextStyle heroTitle(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final size = width < 600
-        ? 32.0
+        ? 34.0
         : width < 1024
-        ? 48.0
-        : 64.0;
-    return GoogleFonts.orbitron(
+            ? 52.0
+            : 68.0;
+    return GoogleFonts.plusJakartaSans(
       fontSize: size,
-      fontWeight: FontWeight.w900,
+      fontWeight: FontWeight.w800,
       color: AppColors.textPrimary,
-      letterSpacing: 2,
-      height: 1.2,
+      letterSpacing: -1.0,
+      height: 1.15,
     );
   }
 
   static TextStyle sectionTitle(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final size = width < 600 ? 24.0 : 32.0;
-    return GoogleFonts.orbitron(
+    final size = width < 600 ? 26.0 : 36.0;
+    return GoogleFonts.plusJakartaSans(
       fontSize: size,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w800,
       color: AppColors.textPrimary,
-      letterSpacing: 1.5,
+      letterSpacing: -0.5,
     );
   }
 
-  // Subheadings — Exo 2 for clean modern look
+  // Subheadings
   static TextStyle subtitle(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final size = width < 600 ? 16.0 : 20.0;
-    return GoogleFonts.exo2(
+    final size = width < 600 ? 17.0 : 22.0;
+    return GoogleFonts.plusJakartaSans(
       fontSize: size,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       color: AppColors.textSecondary,
-      letterSpacing: 0.5,
+      letterSpacing: -0.2,
     );
   }
 
-  // Body — Poppins for readability
+  // Body
   static TextStyle body(BuildContext context) {
-    return GoogleFonts.poppins(
+    return GoogleFonts.inter(
       fontSize: 15,
       fontWeight: FontWeight.w400,
       color: AppColors.textSecondary,
@@ -55,7 +55,7 @@ class AppTextStyles {
   }
 
   static TextStyle bodySmall(BuildContext context) {
-    return GoogleFonts.poppins(
+    return GoogleFonts.inter(
       fontSize: 13,
       fontWeight: FontWeight.w400,
       color: AppColors.textMuted,
@@ -64,53 +64,54 @@ class AppTextStyles {
   }
 
   static TextStyle chipText(BuildContext context) {
-    return GoogleFonts.exo2(
+    return GoogleFonts.plusJakartaSans(
       fontSize: 13,
       fontWeight: FontWeight.w600,
       color: AppColors.secondary,
-      letterSpacing: 0.5,
+      letterSpacing: 0.2,
     );
   }
 
   static TextStyle buttonText(BuildContext context) {
-    return GoogleFonts.exo2(
-      fontSize: 16,
+    return GoogleFonts.plusJakartaSans(
+      fontSize: 15,
       fontWeight: FontWeight.w700,
       color: Colors.white,
-      letterSpacing: 1,
+      letterSpacing: 0.3,
     );
   }
 
   static TextStyle navItem(BuildContext context) {
-    return GoogleFonts.exo2(
-      fontSize: 16,
+    return GoogleFonts.plusJakartaSans(
+      fontSize: 15,
       fontWeight: FontWeight.w600,
       color: AppColors.textSecondary,
-      letterSpacing: 0.8,
+      letterSpacing: 0.1,
     );
   }
 
   static TextStyle projectTitle(BuildContext context) {
-    return GoogleFonts.orbitron(
-      fontSize: 18,
+    return GoogleFonts.plusJakartaSans(
+      fontSize: 20,
       fontWeight: FontWeight.w700,
       color: AppColors.textPrimary,
-      letterSpacing: 1,
+      letterSpacing: -0.3,
     );
   }
 
   static TextStyle timelineTitle(BuildContext context) {
-    return GoogleFonts.exo2(
+    return GoogleFonts.plusJakartaSans(
       fontSize: 20,
       fontWeight: FontWeight.w700,
       color: AppColors.textPrimary,
+      letterSpacing: -0.2,
     );
   }
 
   static TextStyle timelineSubtitle(BuildContext context) {
-    return GoogleFonts.exo2(
+    return GoogleFonts.plusJakartaSans(
       fontSize: 14,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       color: AppColors.secondary,
     );
   }

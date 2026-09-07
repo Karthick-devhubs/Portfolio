@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 
-/// A gradient glow button with hover/press animations.
+/// Astra AI styled animated button with radiant glow and smooth interaction.
 class AnimatedGradientButton extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
   final IconData? icon;
   final double? width;
+  final bool isSecondary;
 
   const AnimatedGradientButton({
     super.key,
@@ -15,6 +16,7 @@ class AnimatedGradientButton extends StatefulWidget {
     required this.onPressed,
     this.icon,
     this.width,
+    this.isSecondary = false,
   });
 
   @override
@@ -32,10 +34,10 @@ class _AnimatedGradientButtonState extends State<AnimatedGradientButton>
   void initState() {
     super.initState();
     _glowController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 2400),
       vsync: this,
     )..repeat(reverse: true);
-    _glowAnimation = Tween<double>(begin: 0.3, end: 0.7).animate(
+    _glowAnimation = Tween<double>(begin: 0.25, end: 0.55).animate(
       CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
     );
   }
@@ -58,37 +60,46 @@ class _AnimatedGradientButtonState extends State<AnimatedGradientButton>
         child: AnimatedBuilder(
           animation: _glowAnimation,
           builder: (context, child) {
-            return AnimatedContainer(
+            return AnimatedScale(
+              scale: _isPressed ? 0.96 : (_isHovered ? 1.03 : 1.0),
               duration: const Duration(milliseconds: 150),
-              transform: Matrix4.identity()
-                ..translate(0.0, 0.0, 0.0)
-                ..scale(_isPressed ? 0.95 : (_isHovered ? 1.05 : 1.0)),
-              transformAlignment: Alignment.center,
+              curve: Curves.easeOutCubic,
               child: Container(
                 width: widget.width,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: AppColors.primaryGradient,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(
-                        alpha: _glowAnimation.value,
-                      ),
-                      blurRadius: _isHovered ? 30 : 20,
-                      spreadRadius: _isHovered ? 2 : 0,
-                    ),
-                  ],
+                  borderRadius: BorderRadius.circular(12),
+                  gradient: widget.isSecondary
+                      ? null
+                      : AppColors.primaryGradient,
+                  color: widget.isSecondary ? AppColors.surface : null,
+                  border: Border.all(
+                    color: widget.isSecondary
+                        ? (_isHovered ? AppColors.secondary : AppColors.surfaceBorder)
+                        : Colors.transparent,
+                    width: 1.5,
+                  ),
+                  boxShadow: widget.isSecondary
+                      ? []
+                      : [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(
+                              alpha: _glowAnimation.value,
+                            ),
+                            blurRadius: _isHovered ? 28 : 18,
+                            spreadRadius: _isHovered ? 2 : 0,
+                          ),
+                        ],
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     onTap: widget.onPressed,
-                    splashColor: Colors.white.withValues(alpha: 0.3),
+                    splashColor: Colors.white.withValues(alpha: 0.2),
                     highlightColor: Colors.white.withValues(alpha: 0.1),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
+                        horizontal: 28,
                         vertical: 16,
                       ),
                       child: Row(
@@ -96,7 +107,11 @@ class _AnimatedGradientButtonState extends State<AnimatedGradientButton>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           if (widget.icon != null) ...[
-                            Icon(widget.icon, color: Colors.white, size: 20),
+                            Icon(
+                              widget.icon,
+                              color: Colors.white,
+                              size: 18,
+                            ),
                             const SizedBox(width: 10),
                           ],
                           Text(

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 import '../widgets/animated_button.dart';
 import '../widgets/toast_service.dart';
 import '../services/email_service.dart';
 
-/// Enhanced contact form with validation
+/// Enhanced contact form styled after Astra AI's interactive forms.
 class ContactForm extends StatefulWidget {
   const ContactForm({super.key});
 
@@ -98,7 +97,7 @@ class _ContactFormState extends State<ContactForm> {
           _isSubmitting
               ? const Center(
                   child: CircularProgressIndicator(
-                    color: AppColors.secondary,
+                    color: AppColors.primary,
                   ),
                 )
               : AnimatedGradientButton(
@@ -123,33 +122,33 @@ class _ContactFormState extends State<ContactForm> {
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
-      style: AppTextStyles.body(context),
+      style: AppTextStyles.body(context).copyWith(color: Colors.white),
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: AppColors.textSecondary),
-        prefixIcon: Icon(icon, color: AppColors.secondary),
+        labelStyle: TextStyle(color: AppColors.textMuted),
+        prefixIcon: Icon(icon, color: AppColors.primaryLight, size: 20),
         filled: true,
-        fillColor: AppColors.surface,
+        fillColor: AppColors.cardDark,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary.withOpacity(0.2)),
+          borderSide: const BorderSide(color: AppColors.surfaceBorder),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary.withOpacity(0.2)),
+          borderSide: const BorderSide(color: AppColors.surfaceBorder),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.secondary, width: 2),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.8),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 1),
+          borderSide: const BorderSide(color: AppColors.error, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.8),
         ),
       ),
     );
@@ -165,7 +164,6 @@ class _ContactFormState extends State<ContactForm> {
           senderEmail: _emailController.text,
           subject: _subjectController.text,
           message: _messageController.text,
-          // recipientEmail: 'karthiofficial0206@gmail.com', // Your email
         );
 
         if (mounted) {

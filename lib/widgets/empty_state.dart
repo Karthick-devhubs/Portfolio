@@ -3,7 +3,7 @@ import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 import 'animated_button.dart';
 
-/// Empty state component for better UX
+/// Empty state component with Astra AI styling
 class EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -32,18 +32,22 @@ class EmptyState extends StatelessWidget {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.12),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.25),
+                  width: 1,
+                ),
               ),
               child: Icon(
                 icon,
-                size: 64,
-                color: AppColors.primary.withOpacity(0.5),
+                size: 56,
+                color: AppColors.primaryLight,
               ),
             ),
             const SizedBox(height: 24),
             Text(
               title,
-              style: AppTextStyles.subtitle(context),
+              style: AppTextStyles.subtitle(context).copyWith(color: Colors.white),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),

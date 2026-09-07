@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 
-/// Skeleton loader for loading states
+/// Skeleton loader for loading states matching Astra AI surface tones
 class SkeletonLoader extends StatefulWidget {
   final double width;
   final double height;
@@ -53,9 +53,9 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [
-                AppColors.surface,
-                AppColors.surface.withOpacity(0.5),
-                AppColors.surface,
+                AppColors.cardDark,
+                AppColors.surfaceElevated,
+                AppColors.cardDark,
               ],
               stops: [
                 _animation.value - 0.3,

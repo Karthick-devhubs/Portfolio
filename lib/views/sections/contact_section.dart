@@ -13,7 +13,7 @@ import '../../widgets/glassmorphism_container.dart';
 import '../../widgets/section_container.dart';
 import '../../widgets/contact_form.dart';
 
-/// Contact section with clickable social icons and email.
+/// Contact section styled after Astra AI with interactive social cards and form.
 class ContactSection extends StatelessWidget {
   const ContactSection({super.key});
 
@@ -39,7 +39,7 @@ class ContactSection extends StatelessWidget {
       children: [
         Expanded(child: _buildContactInfo(context)),
         const SizedBox(width: 48),
-        Expanded(child: ContactForm()),
+        Expanded(child: const ContactForm()),
       ],
     );
   }
@@ -49,7 +49,7 @@ class ContactSection extends StatelessWidget {
       children: [
         _buildContactInfo(context),
         const SizedBox(height: 32),
-        ContactForm(),
+        const ContactForm(),
       ],
     );
   }
@@ -60,73 +60,73 @@ class ContactSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        
-                // Heading
-                ShaderMask(
-                  shaderCallback: (bounds) =>
-                      AppColors.primaryGradient.createShader(bounds),
-                  child: Text(
-                    "Let's Connect",
-                    style: AppTextStyles.sectionTitle(
-                      context,
-                    ).copyWith(color: Colors.white, fontSize: 24),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  "Feel free to reach out for collaborations or just a friendly hello!",
-                  style: AppTextStyles.body(context),
-                ),
-                const SizedBox(height: 32),
-
-                // Contact icons row
-                Wrap(
-                  spacing: 20,
-                  runSpacing: 20,
-                  children: [
-                    _ContactIcon(
-                      icon: Icons.email_rounded,
-                      label: 'Email',
-                      onTap: openEmail,
-                    ),
-                    _ContactIcon(
-                      icon: FontAwesomeIcons.linkedin,
-                      label: 'LinkedIn',
-                      onTap: () => _launchUrl(EnhancedPortfolioData.linkedIn),
-                    ),
-                    _ContactIcon(
-                      icon: FontAwesomeIcons.github,
-                      label: 'GitHub',
-                      onTap: () => _launchUrl(EnhancedPortfolioData.gitHub),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-
-                // Email display
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.background.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: SelectableText(
-                    EnhancedPortfolioData.email,
-                    style: AppTextStyles.chipText(
-                      context,
-                    ).copyWith(fontSize: 15),
-                  ),
-                ),
-      
-              ],
+          // Heading with Astra Hero Gradient
+          ShaderMask(
+            shaderCallback: (bounds) =>
+                AppColors.heroGradient.createShader(bounds),
+            child: Text(
+              "Let's Connect",
+              style: AppTextStyles.sectionTitle(
+                context,
+              ).copyWith(color: Colors.white, fontSize: 24),
             ),
-        
+          ),
+          const SizedBox(height: 12),
+          Text(
+            "Feel free to reach out for collaborations, job opportunities, or just a friendly hello!",
+            style: AppTextStyles.body(context),
+          ),
+          const SizedBox(height: 32),
+
+          // Contact icons row
+          Wrap(
+            spacing: 20,
+            runSpacing: 20,
+            children: [
+              _ContactIcon(
+                icon: Icons.email_rounded,
+                label: 'Email',
+                onTap: openEmail,
+              ),
+              _ContactIcon(
+                icon: FontAwesomeIcons.linkedin,
+                label: 'LinkedIn',
+                onTap: () => _launchUrl(EnhancedPortfolioData.linkedIn),
+              ),
+              _ContactIcon(
+                icon: FontAwesomeIcons.github,
+                label: 'GitHub',
+                onTap: () => _launchUrl(EnhancedPortfolioData.gitHub),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+
+          // Email display container
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 14,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.surfaceBorder,
+              ),
+            ),
+            child: SelectableText(
+              EnhancedPortfolioData.email,
+              style: AppTextStyles.chipText(
+                context,
+              ).copyWith(
+                fontSize: 15,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -161,7 +161,7 @@ String? encodeQueryParameters(Map<String, String> params) {
 }
 
 class _ContactIcon extends StatefulWidget {
-  final IconData icon;
+  final dynamic icon;
   final String label;
   final VoidCallback onTap;
 
@@ -188,7 +188,7 @@ class _ContactIconState extends State<_ContactIcon>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _bounce = Tween<double>(begin: 0, end: -8).animate(
+    _bounce = Tween<double>(begin: 0, end: -6).animate(
       CurvedAnimation(parent: _bounceController, curve: Curves.elasticOut),
     );
   }
@@ -197,6 +197,23 @@ class _ContactIconState extends State<_ContactIcon>
   void dispose() {
     _bounceController.dispose();
     super.dispose();
+  }
+
+  Widget _buildIconWidget(Color color, double size) {
+    if (widget.icon is FaIconData) {
+      return FaIcon(
+        widget.icon as FaIconData,
+        color: color,
+        size: size,
+      );
+    } else if (widget.icon is IconData) {
+      return Icon(
+        widget.icon as IconData,
+        color: color,
+        size: size,
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   @override
@@ -219,15 +236,15 @@ class _ContactIconState extends State<_ContactIcon>
           animation: _bounce,
           builder: (context, child) => Transform.translate(
             offset: Offset(0, _bounce.value),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+            child: AnimatedScale(
+              scale: _isHovered ? 1.08 : 1.0,
+              duration: const Duration(milliseconds: 250),
               curve: Curves.easeOutCubic,
-              transform: Matrix4.identity()..scale(_isHovered ? 1.1 : 1.0),
               child: Column(
                 children: [
                   Container(
-                    width: 60,
-                    height: 60,
+                    width: 58,
+                    height: 58,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: _isHovered
@@ -239,14 +256,14 @@ class _ContactIconState extends State<_ContactIcon>
                       border: Border.all(
                         color: _isHovered
                             ? AppColors.secondary
-                            : AppColors.primary.withValues(alpha: 0.3),
+                            : AppColors.surfaceBorder,
                         width: 1.5,
                       ),
                       boxShadow: _isHovered
                           ? [
                               BoxShadow(
                                 color: AppColors.glowSecondary.withValues(
-                                  alpha: 0.5,
+                                  alpha: 0.45,
                                 ),
                                 blurRadius: 20,
                                 spreadRadius: 2,
@@ -254,21 +271,23 @@ class _ContactIconState extends State<_ContactIcon>
                             ]
                           : [],
                     ),
-                    child: Icon(
-                      widget.icon,
-                      color: _isHovered
-                          ? Colors.white
-                          : AppColors.textSecondary,
-                      size: 24,
+                    child: Center(
+                      child: _buildIconWidget(
+                        _isHovered ? Colors.white : AppColors.textSecondary,
+                        22,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     widget.label,
                     style: AppTextStyles.bodySmall(context).copyWith(
-                      color:
-                          _isHovered ? AppColors.secondary : AppColors.textMuted,
-                      fontWeight: _isHovered ? FontWeight.w600 : FontWeight.normal,
+                      color: _isHovered
+                          ? AppColors.secondary
+                          : AppColors.textMuted,
+                      fontWeight: _isHovered
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
                 ],

@@ -13,7 +13,7 @@ import 'sections/projects_section.dart';
 import 'sections/experience_section.dart';
 import 'sections/contact_section.dart';
 
-/// Home page assembling all sections in a single scrollable view.
+/// Home page assembling all sections in a single scrollable view with Astra AI dark aesthetic.
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -71,30 +71,36 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 32),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(vertical: 36),
+      decoration: const BoxDecoration(
         border: Border(
-          top: BorderSide(color: AppColors.primary.withValues(alpha: 0.1)),
+          top: BorderSide(color: AppColors.surfaceBorder, width: 1),
         ),
       ),
       child: Column(
         children: [
           ShaderMask(
             shaderCallback: (bounds) =>
-                AppColors.primaryGradient.createShader(bounds),
+                AppColors.heroGradient.createShader(bounds),
             child: const Text(
-              '<Portfolio>',
+              'Karthick',
               style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
                 color: Colors.white,
+                letterSpacing: -0.5,
               ),
             ),
           ),
-          const SizedBox(height: 10),
-          Text(
-            '© 2026 Karthick. Built with Flutter & ❤️',
+          const SizedBox(height: 8),
+          const Text(
+            'Crafting modern cross-platform Flutter experiences',
             style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            '© 2026 Karthick. Built with Flutter',
+            style: TextStyle(fontSize: 12, color: AppColors.textMuted),
           ),
         ],
       ),

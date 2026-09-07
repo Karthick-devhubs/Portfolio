@@ -9,7 +9,7 @@ import '../../widgets/animated_on_scroll.dart';
 import '../../widgets/glassmorphism_container.dart';
 import '../../widgets/section_container.dart';
 
-/// About Me section with glassmorphic card.
+/// About Me section with Astra AI glassmorphic styling and ambient lighting.
 class AboutSection extends StatefulWidget {
   const AboutSection({super.key});
 
@@ -58,7 +58,7 @@ class _AboutSectionState extends State<AboutSection>
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Avatar placeholder with glow
+        // Avatar with Astra gradient border & aura
         _buildAvatar(context),
         const SizedBox(width: 48),
         // About content
@@ -88,33 +88,35 @@ class _AboutSectionState extends State<AboutSection>
     );
   }
 
- Widget _buildAvatar(BuildContext context) {
-  return AnimatedBuilder(
-    animation: _rotation,
-    builder: (context, child) => Container(
-      width: 180,
-      height: 180,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: AppColors.primaryGradient,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.4),
-            blurRadius: 30,
-            spreadRadius: 2,
+  Widget _buildAvatar(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _rotation,
+      builder: (context, child) => Container(
+        width: 180,
+        height: 180,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: AppColors.primaryGradient,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.35),
+              blurRadius: 28,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: ClipOval(
+            child: Image.asset(
+              'assets/images/my_image.png',
+              fit: BoxFit.cover,
+            ),
           ),
-        ],
-      ),
-      child: ClipOval(
-        child: Image.asset(
-          'assets/images/my_image.png',
-          fit: BoxFit.cover,
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildContent(BuildContext context) {
     return GlassmorphismContainer(
@@ -123,7 +125,7 @@ class _AboutSectionState extends State<AboutSection>
         children: [
           ShaderMask(
             shaderCallback: (bounds) =>
-                AppColors.primaryGradient.createShader(bounds),
+                AppColors.heroGradient.createShader(bounds),
             child: Text(
               "Who I Am",
               style: AppTextStyles.subtitle(
@@ -133,10 +135,10 @@ class _AboutSectionState extends State<AboutSection>
           ),
           const SizedBox(height: 16),
           Text(EnhancedPortfolioData.about, style: AppTextStyles.body(context)),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
           // Quick stats
           Wrap(
-            spacing: 24,
+            spacing: 32,
             runSpacing: 16,
             children: [
               _buildStat(context, '1+', 'Years Exp'),
@@ -151,10 +153,11 @@ class _AboutSectionState extends State<AboutSection>
 
   Widget _buildStat(BuildContext context, String value, String label) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ShaderMask(
           shaderCallback: (bounds) =>
-              AppColors.primaryGradient.createShader(bounds),
+              AppColors.heroGradient.createShader(bounds),
           child: Text(
             value,
             style: AppTextStyles.sectionTitle(
@@ -163,7 +166,13 @@ class _AboutSectionState extends State<AboutSection>
           ),
         ),
         const SizedBox(height: 4),
-        Text(label, style: AppTextStyles.bodySmall(context)),
+        Text(
+          label,
+          style: AppTextStyles.bodySmall(context).copyWith(
+            color: AppColors.textMuted,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ],
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 
-/// Toast notification service for user feedback
+/// Toast notification service for user feedback with Astra AI card styling
 class ToastService {
   static void show(
     BuildContext context, {
@@ -76,11 +76,11 @@ class _ToastWidgetState extends State<_ToastWidget>
   Color _getColor() {
     switch (widget.type) {
       case ToastType.success:
-        return Colors.green;
+        return AppColors.success;
       case ToastType.error:
-        return Colors.red;
+        return AppColors.error;
       case ToastType.warning:
-        return Colors.orange;
+        return AppColors.accent;
       case ToastType.info:
         return AppColors.primary;
     }
@@ -116,23 +116,28 @@ class _ToastWidgetState extends State<_ToastWidget>
               decoration: BoxDecoration(
                 color: AppColors.cardDark,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _getColor().withOpacity(0.5)),
+                border: Border.all(
+                  color: _getColor().withValues(alpha: 0.5),
+                  width: 1.2,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: _getColor().withOpacity(0.2),
-                    blurRadius: 16,
-                    spreadRadius: 2,
+                    color: _getColor().withValues(alpha: 0.2),
+                    blurRadius: 18,
+                    spreadRadius: 1,
                   ),
                 ],
               ),
               child: Row(
                 children: [
-                  Icon(_getIcon(), color: _getColor(), size: 24),
+                  Icon(_getIcon(), color: _getColor(), size: 22),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       widget.message,
-                      style: AppTextStyles.body(context),
+                      style: AppTextStyles.body(context).copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],

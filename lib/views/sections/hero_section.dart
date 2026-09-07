@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'dart:html' as html show Blob, Url, AnchorElement;
 import '../../controllers/portfolio_controller.dart';
 import '../../models/enhanced_portfolio_data.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_text_styles.dart';
+import '../../utils/file_downloader/file_downloader.dart';
 import '../../utils/responsive.dart';
 import '../../widgets/animated_button.dart';
 
-/// Hero section with animated text reveal and gradient glow.
+/// Hero section with Astra AI tri-color glowing aesthetic and animated reveal.
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
 
@@ -46,7 +44,7 @@ class _HeroSectionState extends State<HeroSection>
       begin: 0,
       end: 1,
     ).animate(CurvedAnimation(parent: _titleController, curve: Curves.easeOut));
-    _titleSlide = Tween<Offset>(begin: const Offset(0, 50), end: Offset.zero)
+    _titleSlide = Tween<Offset>(begin: const Offset(0, 40), end: Offset.zero)
         .animate(
           CurvedAnimation(parent: _titleController, curve: Curves.easeOutCubic),
         );
@@ -76,9 +74,9 @@ class _HeroSectionState extends State<HeroSection>
 
     _bgGlowController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 3000),
+      duration: const Duration(milliseconds: 3200),
     )..repeat(reverse: true);
-    _bgGlow = Tween<double>(begin: 0.3, end: 0.7).animate(
+    _bgGlow = Tween<double>(begin: 0.35, end: 0.75).animate(
       CurvedAnimation(parent: _bgGlowController, curve: Curves.easeInOut),
     );
 
@@ -86,16 +84,16 @@ class _HeroSectionState extends State<HeroSection>
       vsync: this,
       duration: const Duration(milliseconds: 2500),
     )..repeat(reverse: true);
-    _float = Tween<double>(begin: -10, end: 10).animate(
+    _float = Tween<double>(begin: -8, end: 8).animate(
       CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
     );
 
-    // Stagger the animations
+    // Stagger animations
     _titleController.forward();
-    Future.delayed(const Duration(milliseconds: 400), () {
+    Future.delayed(const Duration(milliseconds: 350), () {
       if (mounted) _subtitleController.forward();
     });
-    Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 700), () {
       if (mounted) _buttonController.forward();
     });
   }
@@ -116,16 +114,14 @@ class _HeroSectionState extends State<HeroSection>
     final isMobile = Responsive.isMobile(context);
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
+    return SizedBox(
       key: controller.heroKey,
       width: double.infinity,
-      // Use a fixed height rather than minHeight to avoid
-      // unbounded constraint issues inside SingleChildScrollView.
       height: screenHeight * 0.9,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Background glow orbs
+          // Background atmospheric glow orbs
           _buildBackgroundGlow(),
 
           // Content
@@ -133,12 +129,12 @@ class _HeroSectionState extends State<HeroSection>
             child: SizedBox(
               width: Responsive.contentWidth(context),
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: isMobile ? 40 : 60),
+                padding: EdgeInsets.symmetric(vertical: isMobile ? 32 : 60),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Greeting + Name
+                    // Greeting badge + Name
                     AnimatedBuilder(
                       animation: Listenable.merge([_titleController, _floatController]),
                       builder: (context, _) => Transform.translate(
@@ -148,14 +144,46 @@ class _HeroSectionState extends State<HeroSection>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Hello, I'm",
-                                style: AppTextStyles.subtitle(context).copyWith(
-                                  color: AppColors.secondary,
-                                  fontSize: isMobile ? 16 : 20,
+                              // Astra-style badge pill
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: AppColors.primary.withValues(alpha: 0.3),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: AppColors.accent,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Flutter Developer Portfolio",
+                                      style: AppTextStyles.chipText(context).copyWith(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 16),
+
+                              // Name with Astra Harmonious Gradient
                               ShaderMask(
                                 shaderCallback: (bounds) =>
                                     AppColors.heroGradient.createShader(bounds),
@@ -186,7 +214,7 @@ class _HeroSectionState extends State<HeroSection>
                               Text(
                                 EnhancedPortfolioData.title,
                                 style: AppTextStyles.subtitle(context).copyWith(
-                                  fontSize: isMobile ? 20 : 28,
+                                  fontSize: isMobile ? 22 : 30,
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.textPrimary,
                                 ),
@@ -196,13 +224,14 @@ class _HeroSectionState extends State<HeroSection>
                                 constraints: BoxConstraints(
                                   maxWidth: isMobile
                                       ? double.infinity
-                                      : MediaQuery.of(context).size.width * 0.5,
+                                      : MediaQuery.of(context).size.width * 0.52,
                                 ),
                                 child: Text(
                                   EnhancedPortfolioData.tagline,
                                   style: AppTextStyles.body(context).copyWith(
                                     fontSize: isMobile ? 14 : 16,
-                                    height: 1.8,
+                                    height: 1.7,
+                                    color: AppColors.textSecondary,
                                   ),
                                 ),
                               ),
@@ -211,7 +240,7 @@ class _HeroSectionState extends State<HeroSection>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 36),
 
                     // CTA Buttons
                     AnimatedBuilder(
@@ -227,11 +256,12 @@ class _HeroSectionState extends State<HeroSection>
                                     icon: Icons.rocket_launch_rounded,
                                     onPressed: () => controller.scrollToSection(3),
                                   ),
-                                  const SizedBox(height: 16),
+                                  const SizedBox(height: 14),
                                   AnimatedGradientButton(
                                     text: 'Download Resume',
                                     icon: Icons.download_rounded,
-                                    onPressed: downloadResumeWeb,
+                                    isSecondary: true,
+                                    onPressed: () => FileDownloader.downloadResume(),
                                   ),
                                 ],
                               )
@@ -247,7 +277,8 @@ class _HeroSectionState extends State<HeroSection>
                                   AnimatedGradientButton(
                                     text: 'Download Resume',
                                     icon: Icons.download_rounded,
-                                    onPressed: downloadResumeWeb,
+                                    isSecondary: true,
+                                    onPressed: () => FileDownloader.downloadResume(),
                                   ),
                                 ],
                               ),
@@ -263,54 +294,42 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Future<void> downloadResumeWeb() async {
-  final data = await rootBundle.load('assets/resume/KarthickResume.pdf');
-  final bytes = data.buffer.asUint8List();
-
-  final blob = html.Blob([bytes]);
-  final url = html.Url.createObjectUrlFromBlob(blob);
-
-  final anchor = html.AnchorElement(href: url)
-    ..setAttribute("download", "Karthick_Resume.pdf")
-    ..click();
-
-  html.Url.revokeObjectUrl(url);
-}
-
   Widget _buildBackgroundGlow() {
     return AnimatedBuilder(
       animation: _bgGlow,
       builder: (context, _) => Stack(
         fit: StackFit.expand,
         children: [
+          // Blue ambient aura (top right)
           Positioned(
-            top: 100,
-            right: -100,
+            top: 80,
+            right: -80,
             child: Container(
-              width: 400,
-              height: 400,
+              width: 450,
+              height: 450,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    AppColors.primary.withValues(alpha: _bgGlow.value * 0.15),
+                    AppColors.primary.withValues(alpha: _bgGlow.value * 0.22),
                     Colors.transparent,
                   ],
                 ),
               ),
             ),
           ),
+          // Purple/Amber aura (bottom left)
           Positioned(
-            top: 300,
-            left: -50,
+            top: 320,
+            left: -60,
             child: Container(
-              width: 300,
-              height: 300,
+              width: 380,
+              height: 380,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    AppColors.secondary.withValues(alpha: _bgGlow.value * 0.1),
+                    AppColors.secondary.withValues(alpha: _bgGlow.value * 0.16),
                     Colors.transparent,
                   ],
                 ),

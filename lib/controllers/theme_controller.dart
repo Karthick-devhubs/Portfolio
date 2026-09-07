@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_colors.dart';
 
-/// Controls the app theme (light/dark toggle).
+/// Controls the app theme with Astra AI color system.
 class ThemeController extends GetxController {
   final isDarkMode = true.obs;
 
@@ -13,8 +13,9 @@ class ThemeController extends GetxController {
       primary: AppColors.primary,
       secondary: AppColors.secondary,
       surface: AppColors.cardDark,
+      error: AppColors.error,
     ),
-    textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
+    textTheme: GoogleFonts.plusJakartaSansTextTheme(ThemeData.dark().textTheme),
   );
 
   ThemeData get lightTheme => ThemeData.light().copyWith(
@@ -23,8 +24,9 @@ class ThemeController extends GetxController {
       primary: AppColors.primary,
       secondary: AppColors.secondary,
       surface: AppColors.lightCard,
+      error: AppColors.error,
     ),
-    textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
+    textTheme: GoogleFonts.plusJakartaSansTextTheme(ThemeData.light().textTheme),
   );
 
   void toggleTheme() {

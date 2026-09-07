@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 
-/// A styled skill chip with gradient border and tap/hover effect.
+/// A styled skill chip with Astra AI glow and hover effects.
 class SkillChip extends StatefulWidget {
   final String label;
 
@@ -27,7 +27,7 @@ class _SkillChipState extends State<SkillChip>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _pulse = Tween<double>(begin: 1.0, end: 1.05).animate(
+    _pulse = Tween<double>(begin: 1.0, end: 1.04).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
   }
@@ -41,7 +41,7 @@ class _SkillChipState extends State<SkillChip>
   @override
   Widget build(BuildContext context) {
     final isActive = _isHovered || _isTapped;
-    
+
     return MouseRegion(
       onEnter: (_) {
         setState(() => _isHovered = true);
@@ -69,30 +69,30 @@ class _SkillChipState extends State<SkillChip>
             scale: _isTapped ? 0.95 : (isActive ? _pulse.value : 1.0),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 gradient: isActive
                     ? LinearGradient(
                         colors: [
-                          AppColors.primary.withOpacity(0.2),
-                          AppColors.secondary.withOpacity(0.15),
+                          AppColors.primary.withValues(alpha: 0.2),
+                          AppColors.secondary.withValues(alpha: 0.15),
                         ],
                       )
                     : null,
-                color: isActive ? null : AppColors.cardDark.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(12),
+                color: isActive ? null : AppColors.cardDark,
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: isActive
                       ? AppColors.secondary
-                      : AppColors.primary.withOpacity(0.3),
-                  width: 1.5,
+                      : AppColors.surfaceBorder,
+                  width: 1.2,
                 ),
                 boxShadow: isActive
                     ? [
                         BoxShadow(
-                          color: AppColors.glowSecondary.withOpacity(0.4),
+                          color: AppColors.glowSecondary.withValues(alpha: 0.35),
                           blurRadius: 16,
-                          spreadRadius: 2,
+                          spreadRadius: 1,
                         ),
                       ]
                     : [],
@@ -100,8 +100,8 @@ class _SkillChipState extends State<SkillChip>
               child: Text(
                 widget.label,
                 style: AppTextStyles.chipText(context).copyWith(
-                  color: isActive ? AppColors.secondary : AppColors.textSecondary,
-                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                  color: isActive ? Colors.white : AppColors.textSecondary,
+                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             ),

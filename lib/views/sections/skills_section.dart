@@ -8,7 +8,7 @@ import '../../widgets/animated_on_scroll.dart';
 import '../../widgets/section_container.dart';
 import '../../widgets/skill_chip.dart';
 
-/// Skills section organized by category with animated chips.
+/// Skills section organized by category with Astra AI animated chips.
 class SkillsSection extends StatelessWidget {
   const SkillsSection({super.key});
 
@@ -18,14 +18,14 @@ class SkillsSection extends StatelessWidget {
 
     return SectionContainer(
       sectionKey: controller.skillsKey,
-      title: 'Skills',
+      title: 'Skills & Tech Stack',
       child: Column(
         children: List.generate(EnhancedPortfolioData.enhancedSkills.length, (index) {
           final category = EnhancedPortfolioData.enhancedSkills[index];
           return AnimatedOnScroll(
             delay: Duration(milliseconds: index * 100),
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 28),
+              padding: const EdgeInsets.only(bottom: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -36,7 +36,7 @@ class SkillsSection extends StatelessWidget {
                         width: 4,
                         height: 20,
                         decoration: BoxDecoration(
-                          gradient: AppColors.primaryGradient,
+                          gradient: AppColors.heroGradient,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -44,7 +44,7 @@ class SkillsSection extends StatelessWidget {
                       Text(
                         category.category,
                         style: AppTextStyles.subtitle(context).copyWith(
-                          fontSize: 16,
+                          fontSize: 17,
                           fontWeight: FontWeight.w700,
                           color: AppColors.textPrimary,
                         ),

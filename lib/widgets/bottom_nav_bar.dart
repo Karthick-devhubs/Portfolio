@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 
-/// Bottom navigation bar for mobile devices with modern animations
+/// Bottom navigation bar for mobile devices with Astra AI aesthetic.
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;
   final Function(int) onNavigate;
@@ -16,9 +16,9 @@ class BottomNavBar extends StatefulWidget {
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> with SingleTickerProviderStateMixin {
+class _BottomNavBarState extends State<BottomNavBar>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  int _previousIndex = 0;
 
   @override
   void initState() {
@@ -27,14 +27,12 @@ class _BottomNavBarState extends State<BottomNavBar> with SingleTickerProviderSt
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _previousIndex = widget.currentIndex;
   }
 
   @override
   void didUpdateWidget(BottomNavBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.currentIndex != widget.currentIndex) {
-      _previousIndex = oldWidget.currentIndex;
       _controller.forward(from: 0);
     }
   }
@@ -49,20 +47,13 @@ class _BottomNavBarState extends State<BottomNavBar> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppColors.cardDark.withOpacity(0.95),
-            AppColors.background,
-          ],
-        ),
-        border: Border(
-          top: BorderSide(color: AppColors.primary.withOpacity(0.2), width: 1),
+        color: AppColors.cardDark.withValues(alpha: 0.95),
+        border: const Border(
+          top: BorderSide(color: AppColors.surfaceBorder, width: 1),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.4),
             blurRadius: 20,
             offset: const Offset(0, -4),
           ),
@@ -70,7 +61,7 @@ class _BottomNavBarState extends State<BottomNavBar> with SingleTickerProviderSt
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -91,21 +82,21 @@ class _BottomNavBarState extends State<BottomNavBar> with SingleTickerProviderSt
       onTap: () => widget.onNavigate(index),
       borderRadius: BorderRadius.circular(16),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 250),
         curve: Curves.easeOutCubic,
         padding: EdgeInsets.symmetric(
           horizontal: isActive ? 20 : 12,
-          vertical: 10,
+          vertical: 8,
         ),
         decoration: BoxDecoration(
           gradient: isActive ? AppColors.primaryGradient : null,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
-                    blurRadius: 12,
-                    spreadRadius: 0,
+                    color: AppColors.primary.withValues(alpha: 0.35),
+                    blurRadius: 14,
+                    spreadRadius: 1,
                   ),
                 ]
               : null,
@@ -114,22 +105,22 @@ class _BottomNavBarState extends State<BottomNavBar> with SingleTickerProviderSt
           mainAxisSize: MainAxisSize.min,
           children: [
             AnimatedScale(
-              scale: isActive ? 1.1 : 1.0,
-              duration: const Duration(milliseconds: 300),
+              scale: isActive ? 1.08 : 1.0,
+              duration: const Duration(milliseconds: 250),
               curve: Curves.easeOutCubic,
               child: Icon(
                 icon,
                 color: isActive ? Colors.white : AppColors.textMuted,
-                size: 24,
+                size: 22,
               ),
             ),
             const SizedBox(height: 4),
             AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 250),
               style: TextStyle(
                 fontSize: isActive ? 12 : 11,
                 color: isActive ? Colors.white : AppColors.textMuted,
-                fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
               ),
               child: Text(label),
             ),

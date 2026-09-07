@@ -5,7 +5,7 @@ import '../utils/app_text_styles.dart';
 import '../utils/responsive.dart';
 import 'glassmorphism_container.dart';
 
-/// Analytics dashboard showing portfolio statistics
+/// Analytics dashboard showing portfolio statistics with Astra AI aesthetic.
 class AnalyticsDashboard extends StatelessWidget {
   final PortfolioAnalytics analytics;
 
@@ -51,21 +51,21 @@ class AnalyticsDashboard extends StatelessWidget {
           Icons.favorite_rounded,
           analytics.totalLikes.toString(),
           'Total Likes',
-          Colors.red,
+          AppColors.secondary,
         ),
         _buildStatCard(
           context,
           Icons.work_rounded,
           analytics.totalProjects.toString(),
           'Projects',
-          AppColors.secondary,
+          AppColors.accent,
         ),
         _buildStatCard(
           context,
           Icons.code_rounded,
           analytics.topTechnologies.length.toString(),
           'Technologies',
-          Colors.green,
+          AppColors.success,
         ),
       ],
     );
@@ -85,10 +85,14 @@ class AnalyticsDashboard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.15),
               shape: BoxShape.circle,
+              border: Border.all(
+                color: color.withValues(alpha: 0.3),
+                width: 1,
+              ),
             ),
-            child: Icon(icon, color: color, size: 28),
+            child: Icon(icon, color: color, size: 24),
           ),
           const SizedBox(height: 12),
           Text(
@@ -96,6 +100,7 @@ class AnalyticsDashboard extends StatelessWidget {
             style: AppTextStyles.subtitle(context).copyWith(
               fontSize: 24,
               fontWeight: FontWeight.w700,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 4),
@@ -118,7 +123,7 @@ class AnalyticsDashboard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.trending_up_rounded,
                 color: AppColors.secondary,
                 size: 20,
@@ -126,7 +131,10 @@ class AnalyticsDashboard extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 'Top Technologies',
-                style: AppTextStyles.subtitle(context).copyWith(fontSize: 16),
+                style: AppTextStyles.subtitle(context).copyWith(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
               ),
             ],
           ),
@@ -136,7 +144,10 @@ class AnalyticsDashboard extends StatelessWidget {
             runSpacing: 8,
             children: analytics.topTechnologies.map((tech) {
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(8),
@@ -146,7 +157,7 @@ class AnalyticsDashboard extends StatelessWidget {
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               );

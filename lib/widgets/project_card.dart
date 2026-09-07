@@ -6,7 +6,7 @@ import '../utils/app_text_styles.dart';
 import '../views/project_detail_page.dart';
 import 'glassmorphism_container.dart';
 
-/// A project card with glassmorphism styling and hover animation.
+/// A project card styled with Astra AI aesthetics and smooth hover transitions.
 class ProjectCard extends StatefulWidget {
   final ProjectModel project;
   final int index;
@@ -65,7 +65,7 @@ class _ProjectCardState extends State<ProjectCard>
                 return FadeTransition(
                   opacity: animation,
                   child: ScaleTransition(
-                    scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                    scale: Tween<double>(begin: 0.96, end: 1.0).animate(
                       CurvedAnimation(
                         parent: animation,
                         curve: Curves.easeOutCubic,
@@ -75,27 +75,26 @@ class _ProjectCardState extends State<ProjectCard>
                   ),
                 );
               },
-              transitionDuration: const Duration(milliseconds: 400),
+              transitionDuration: const Duration(milliseconds: 350),
             ),
           );
         },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
+        child: AnimatedScale(
+          scale: _isHovered ? 1.02 : 1.0,
+          duration: const Duration(milliseconds: 250),
           curve: Curves.easeOutCubic,
-          transform: Matrix4.identity()
-            ..translate(0.0, _isHovered ? -8.0 : 0.0, 0.0)
-            ..scale(_isHovered ? 1.02 : 1.0, _isHovered ? 1.02 : 1.0, 1.0),
           child: AnimatedBuilder(
             animation: _shimmer,
             builder: (context, child) => Stack(
               children: [
                 GlassmorphismContainer(
                   borderColor: _isHovered
-                      ? AppColors.secondary.withValues(alpha: 0.5)
-                      : AppColors.primary.withValues(alpha: 0.15),
+                      ? AppColors.secondary.withValues(alpha: 0.6)
+                      : AppColors.surfaceBorder,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Header with project index & status
                       Row(
                         children: [
                           Container(
@@ -110,28 +109,40 @@ class _ProjectCardState extends State<ProjectCard>
                             child: Text(
                               '0${widget.index + 1}',
                               style: AppTextStyles.chipText(context).copyWith(
-                                  color: Colors.white, fontWeight: FontWeight.w800),
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
                           ),
                           const Spacer(),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: _getStatusColor().withOpacity(0.9),
+                              color: _getStatusColor().withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(6),
+                              border: Border.all(
+                                color: _getStatusColor().withValues(alpha: 0.4),
+                                width: 1,
+                              ),
                             ),
                             child: Text(
                               widget.project.status.name.toUpperCase(),
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: _getStatusColor(),
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,
+                                letterSpacing: 0.5,
                               ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
+
+                      // Title
                       Text(
                         widget.project.title,
                         style: AppTextStyles.projectTitle(context),
@@ -139,6 +150,8 @@ class _ProjectCardState extends State<ProjectCard>
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
+
+                      // Category
                       Text(
                         widget.project.category,
                         style: AppTextStyles.bodySmall(context).copyWith(
@@ -147,6 +160,8 @@ class _ProjectCardState extends State<ProjectCard>
                         ),
                       ),
                       const SizedBox(height: 12),
+
+                      // Description
                       Text(
                         widget.project.description,
                         style: AppTextStyles.body(context),
@@ -154,84 +169,51 @@ class _ProjectCardState extends State<ProjectCard>
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 16),
+
+                      // Features summary
                       Row(
                         children: [
-                          Icon(Icons.check_circle_outline, size: 14, color: AppColors.secondary),
-                          const SizedBox(width: 6),
+                          const Icon(
+                            Icons.check_circle_rounded,
+                            size: 16,
+                            color: AppColors.primaryLight,
+                          ),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              '${widget.project.features.length} Key Features',
+                              '${widget.project.features.length} Key Features Included',
                               style: AppTextStyles.bodySmall(context).copyWith(
                                 color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
-                          // Row(
-                          //   children: [
-                          //     Icon(Icons.visibility_rounded, size: 14, color: AppColors.textMuted),
-                          //     const SizedBox(width: 4),
-                          //     Text(
-                          //       widget.project.views > 999
-                          //           ? '${(widget.project.views / 1000).toStringAsFixed(1)}k'
-                          //           : widget.project.views.toString(),
-                          //       style: AppTextStyles.bodySmall(context).copyWith(
-                          //         color: AppColors.textMuted,
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
                         ],
                       ),
-                      // const SizedBox(height: 16),
-                      // Wrap(
-                      //   spacing: 8,
-                      //   runSpacing: 8,
-                      //   children: widget.project.techStack.take(5).map((tech) {
-                      //     return Container(
-                      //       padding: const EdgeInsets.symmetric(
-                      //         horizontal: 10,
-                      //         vertical: 5,
-                      //       ),
-                      //       decoration: BoxDecoration(
-                      //         color: AppColors.primary.withValues(alpha: 0.1),
-                      //         borderRadius: BorderRadius.circular(6),
-                      //         border: Border.all(
-                      //           color: AppColors.primary.withValues(alpha: 0.3),
-                      //         ),
-                      //       ),
-                      //       child: Text(
-                      //         tech,
-                      //         style: AppTextStyles.chipText(context).copyWith(
-                      //             fontSize: 11, color: AppColors.primary),
-                      //       ),
-                      //     );
-                      //   }).toList(),
-                      // ),
-                      // if (widget.project.techStack.length > 5)
-                      //   Padding(
-                      //     padding: const EdgeInsets.only(top: 8),
-                      //     child: Text(
-                      //       '+${widget.project.techStack.length - 5} more',
-                      //       style: AppTextStyles.bodySmall(context).copyWith(
-                      //         color: AppColors.textMuted,
-                      //         fontStyle: FontStyle.italic,
-                      //       ),
-                      //     ),
-                      //   ),
                       const SizedBox(height: 16),
+
+                      // Action footer
                       Row(
                         children: [
-                          Icon(Icons.touch_app_rounded, size: 16, color: AppColors.secondary),
+                          const Icon(
+                            Icons.touch_app_rounded,
+                            size: 16,
+                            color: AppColors.secondary,
+                          ),
                           const SizedBox(width: 6),
                           Text(
-                            'Tap to view details',
+                            'View project details',
                             style: AppTextStyles.bodySmall(context).copyWith(
                               color: AppColors.secondary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           const Spacer(),
-                          Icon(Icons.arrow_forward_rounded, size: 16, color: AppColors.secondary),
+                          const Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 16,
+                            color: AppColors.secondary,
+                          ),
                         ],
                       ),
                     ],
@@ -254,39 +236,14 @@ class _ProjectCardState extends State<ProjectCard>
     );
   }
 
-  Widget _buildMetric(IconData icon, int value) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.cardDark.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: AppColors.secondary),
-          const SizedBox(width: 4),
-          Text(
-            value > 999 ? '${(value / 1000).toStringAsFixed(1)}k' : value.toString(),
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Color _getStatusColor() {
     switch (widget.project.status) {
       case ProjectStatus.completed:
-        return Colors.green;
+        return AppColors.success;
       case ProjectStatus.inProgress:
-        return Colors.orange;
+        return AppColors.accent;
       case ProjectStatus.archived:
-        return Colors.grey;
+        return AppColors.textMuted;
     }
   }
 }
@@ -304,10 +261,10 @@ class ShimmerPainter extends CustomPainter {
         end: Alignment.bottomRight,
         colors: [
           Colors.transparent,
-          AppColors.secondary.withValues(alpha: 0.1),
+          AppColors.secondary.withValues(alpha: 0.12),
           Colors.transparent,
         ],
-        stops: [progress - 0.3, progress, progress + 0.3],
+        stops: [progress - 0.25, progress, progress + 0.25],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);

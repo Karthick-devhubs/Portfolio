@@ -9,7 +9,7 @@ import '../../widgets/animated_on_scroll.dart';
 import '../../widgets/glassmorphism_container.dart';
 import '../../widgets/section_container.dart';
 
-/// Experience section with a vertical timeline UI.
+/// Experience section with Astra AI styled timeline and luminous indicators.
 class ExperienceSection extends StatelessWidget {
   const ExperienceSection({super.key});
 
@@ -19,7 +19,7 @@ class ExperienceSection extends StatelessWidget {
 
     return SectionContainer(
       sectionKey: controller.experienceKey,
-      title: 'Experience',
+      title: 'Work Experience',
       child: Column(
         children: List.generate(EnhancedPortfolioData.experience.length, (index) {
           final exp = EnhancedPortfolioData.experience[index];
@@ -54,7 +54,7 @@ class ExperienceSection extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.primary.withValues(alpha: 0.5),
-                        blurRadius: 10,
+                        blurRadius: 12,
                         spreadRadius: 2,
                       ),
                     ],
@@ -63,7 +63,7 @@ class ExperienceSection extends StatelessWidget {
                 // Vertical line
                 Container(
                   width: 2,
-                  height: 120,
+                  height: 130,
                   margin: const EdgeInsets.only(top: 4),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -71,7 +71,7 @@ class ExperienceSection extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       colors: [
                         AppColors.primary,
-                        AppColors.primary.withValues(alpha: 0.1),
+                        AppColors.secondary.withValues(alpha: 0.1),
                       ],
                     ),
                   ),
@@ -101,7 +101,11 @@ class ExperienceSection extends StatelessWidget {
                       exp.duration,
                       style: AppTextStyles.chipText(
                         context,
-                      ).copyWith(color: Colors.white, fontSize: 12),
+                      ).copyWith(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -120,7 +124,7 @@ class ExperienceSection extends StatelessWidget {
                   // Bullet points
                   ...exp.points.map<Widget>(
                     (point) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(bottom: 10),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

@@ -6,11 +6,8 @@ import '../../utils/responsive.dart';
 import '../../widgets/animated_on_scroll.dart';
 import '../../widgets/project_card.dart';
 import '../../widgets/section_container.dart';
-import '../../utils/app_colors.dart';
-import '../../utils/app_text_styles.dart';
-import '../../models/enhanced_models.dart';
 
-/// Projects section with responsive grid of project cards.
+/// Projects section with responsive grid of project cards styled after Astra AI.
 class ProjectsSection extends StatelessWidget {
   const ProjectsSection({super.key});
 
@@ -27,47 +24,8 @@ class ProjectsSection extends StatelessWidget {
 
     return SectionContainer(
       sectionKey: controller.projectsKey,
-      title: 'Projects',
-      child: Column(
-        children: [
-          // _buildFilters(context),
-          const SizedBox(height: 32),
-          _buildCards(context, crossAxisCount, availableWidth),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilters(BuildContext context) {
-    final categories = ['All', 'Finance', 'Healthcare', 'Education', 'Business', 'Health & Fitness', 'IoT'];
-    
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: categories.map((category) {
-          final isAll = category == 'All';
-          return Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: FilterChip(
-              label: Text(category),
-              selected: isAll,
-              onSelected: (selected) {
-                // Filter logic can be added here
-              },
-              backgroundColor: AppColors.surface,
-              selectedColor: AppColors.primary.withOpacity(0.2),
-              checkmarkColor: AppColors.secondary,
-              labelStyle: TextStyle(
-                color: isAll ? AppColors.secondary : AppColors.textSecondary,
-                fontWeight: isAll ? FontWeight.w600 : FontWeight.w400,
-              ),
-              side: BorderSide(
-                color: isAll ? AppColors.primary : AppColors.primary.withOpacity(0.2),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
+      title: 'Featured Projects',
+      child: _buildCards(context, crossAxisCount, availableWidth),
     );
   }
 
@@ -82,11 +40,11 @@ class ProjectsSection extends StatelessWidget {
         children: List.generate(EnhancedPortfolioData.projects.length, (index) {
           return TweenAnimationBuilder<double>(
             tween: Tween(begin: 0.0, end: 1.0),
-            duration: Duration(milliseconds: 400 + (index * 100)),
+            duration: Duration(milliseconds: 350 + (index * 80)),
             curve: Curves.easeOutCubic,
             builder: (context, value, child) {
               return Transform.translate(
-                offset: Offset(30 * (1 - value), 0),
+                offset: Offset(20 * (1 - value), 0),
                 child: Opacity(
                   opacity: value,
                   child: child,
@@ -106,7 +64,7 @@ class ProjectsSection extends StatelessWidget {
     }
 
     // Grid for tablet/desktop
-    final spacing = 24.0;
+    const spacing = 24.0;
     final cardWidth =
         (availableWidth - (crossAxisCount - 1) * spacing) / crossAxisCount;
 
@@ -115,7 +73,7 @@ class ProjectsSection extends StatelessWidget {
       runSpacing: spacing,
       children: List.generate(EnhancedPortfolioData.projects.length, (index) {
         return AnimatedOnScroll(
-          delay: Duration(milliseconds: index * 150),
+          delay: Duration(milliseconds: index * 120),
           child: SizedBox(
             width: cardWidth,
             child: ProjectCard(
